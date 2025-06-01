@@ -14,9 +14,12 @@
 - Email: janh@ethz.ch
 
 
-Date of data collection: 2025-06-01 to 2025-06-04
-Geographi location of data collection: Zurich, Switzerland
+Date of data collection: 
+From 2025-06-01 to 2025-06-04
 
+Geographical locations of data collection: 
+Zurich, Switzerland
+Neuenkirch, Switzerland
 
 
 
@@ -46,7 +49,7 @@ People in the forest were approached and asked to fill out the survey.
 A flyer with a QR code to the survey was hung out to a post at the forest entrance.
 
 3.  Methods for processing the data:
-The data was processed in R-studio and Quarto, with the help of R-scripts.
+The data was gathered with a Google Forms survey. The processing was done with the help of Google Sheets, R-studio and Quarto. R-scripts were used to perform data tidying, processing and visualization.
 
 4.  Instrument- or software-specific information needed to interpret the
     data: 
@@ -54,7 +57,8 @@ No specific software is needed.
 
 5.  Standards and calibration information, if appropriate: -
 
-6.  Environmental/experimental conditions: -
+6.  Environmental/experimental conditions: 
+The survey was conducted outdoors in the forest. People who were in the forest were asked about their opinion. Flyers were hung up at forest entrances.
 
 7.  Describe any quality-assurance procedures performed on the data: 
 The survey was peer-reviewed by classmates before publishing.
