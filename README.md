@@ -14,9 +14,12 @@
 - Email: janh@ethz.ch
 
 
-Date of data collection: 2025-06-01 to 2025-06-04
-Geographi location of data collection: Zurich, Switzerland
+Date of data collection: 
+From 2025-06-01 to 2025-06-04
 
+Geographical locations of data collection: 
+Zurich, Switzerland
+Neuenkirch, Switzerland
 
 
 
