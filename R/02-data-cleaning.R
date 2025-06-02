@@ -22,21 +22,21 @@ survey_data <- read_csv("data/raw/survey-raw.csv")
 # step 1: rename columns
 survey_renamed <- survey_raw |> 
   rename(timestamp = Timestamp) |> 
-  rename(feeling = 2) |> 
+  rename(waste_feeling = 2) |> 
   rename(waste_location = 3) |> 
   rename(waste_location_today = 4) |> 
   rename(waste_type = 5) |> 
-  rename(day_frequency = 6) |> 
+  rename(activities_frequency = 6) |> 
   rename(activities = 7) |> 
   rename(activities_today = 8) |> 
-  rename(wasteful_activities = 9) |> 
+  rename(activities_wasteful = 9) |> 
   rename(sports_value = 10) |> 
-  rename(sports_waste_freq = 11) |> 
-  rename(sportsmen_littering = 12) |>
-  rename(sportsevent_waste = 13) |> 
+  rename(sports_waste_frequency = 11) |> 
+  rename(sports_littering = 12) |>
+  rename(sports_event_waste = 13) |> 
   rename(measures = 14) |> 
-  rename(responsible = 15) |> 
-  rename(removal_freq = 16) |> 
+  rename(measures_responsible = 15) |> 
+  rename(measures_frequency = 16) |> 
   rename(age = 17)
   rename(gender = 18)
 
@@ -52,9 +52,12 @@ survey_dates <- survey_renamed |>
   select(!timestamp) # remove old timestamp variable
 
 # step 3: shorten text values
+# create lists with shorter texts
 trash_locations = c("paths", "picnicareas", "parkinglots", "deepforest", "other")
 trash_types = c("paper", "plasticbottles", "cans", "foodpackaging", "cigarette", "dogwastebag", "clothing", "other")
-
+activity = c("picnic", "camping", "walking", "biking", "horseriding", "photography", "birdwatching", "gathering", "other")
+measure = c("authority", "bins", "signs", "fines", "cleanupevent", "volunteers")
+responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 
 # coerce data types ------------------------
 head(survey_names)
