@@ -19,41 +19,39 @@ survey_data <- read_csv("data/raw/survey-raw.csv")
 
 # tidy data from survey -----------------
 
-# rename columns
+# step 1: rename columns
 survey_renamed <- survey_raw |> 
+  rename(timestamp = Timestamp) |> 
   rename(feeling = 2) |> 
-  rename(trash_location = 3) |> 
-  rename(trash_location_today = 4)
+  rename(waste_location = 3) |> 
+  rename(waste_location_today = 4) |> 
+  rename(waste_type = 5) |> 
+  rename(day_frequency = 6) |> 
+  rename(activities = 7) |> 
+  rename(activities_today = 8) |> 
+  rename(wasteful_activities = 9) |> 
+  rename(sports_value = 10) |> 
+  rename(sports_waste_freq = 11) |> 
+  rename(sportsmen_littering = 12) |>
+  rename(sportsevent_waste = 13) |> 
+  rename(measures = 14) |> 
+  rename(responsible = 15) |> 
+  rename(removal_freq = 16) |> 
+  rename(age = 17)
+  rename(gender = 18)
 
 
-
-write_rds(survey)
-
-# step 1: create weekday, datetime variable
-# help with perplexity ai:
-survey_time <- survey_data |> 
-  mutate(datetime = ymd_hms(Timestamp)) |> 
-  mutate(weekday = wday(Timestamp, label = TRUE, abb = FALSE)) |> 
+# step 2: change dates and times, add weekday variable
+survey_dates <- survey_renamed |> 
+  mutate(date = as_date(timestamp)) |> 
+  mutate(time = format(timestamp, "%H:%M:%S")) |> 
+  mutate(weekday = wday(timestamp, label = TRUE, abb = FALSE)) |> 
   relocate(weekday) |> 
-  relocate(datetime) |> 
-  select(!Timestamp) # remove old Timestamp column, it is now "datetime"
-
-# check
-# head(survey_time)
+  relocate(time) |> 
+  relocate(date) |> 
+  select(!timestamp) # remove old timestamp variable
 
 
-# rename very long variables
-survey_names <- survey_time |> 
-  rename(rating = `How do you rate the state of recycling at ETH Zürich? (1 star = poor, 5 stars = excellent)`) |> 
-  rename(recycler_level = `Do you currently separate waste for recycling?`) |> 
-  rename(materials_recycled = `Which of the following 6 materials do you recycle? Select all that apply.`) |> 
-  rename(vehicle = `How do you bring your recyclables to a recycling place? Choose what you use most often.`) |> 
-  rename(walkable_station = `Do you have a recycling station in walking distance to your house?`) |> 
-  rename(regular_walker = `Do you regularly bring your separated waste to this nearby recycling station on foot?`) |> 
-  rename(disposal_level = `How do you dispose general waste? Select the answer that suits you most.`) |> 
-  rename(bag_size = `Which of these waste bag sizes do you prefer?`) |> 
-  rename(pet_recycler = `You're in a park in Zürich and want to dispose your empty PET bottle. The bin next to you is full. Which of these answers best match your action?`) |> 
-  rename(banana_recycler = `You're in a park in Zürich and want to dispose your banana peel. The bin next to you is full. Which of these answers best match your action?`)
 
 # coerce data types ------------------------
 head(survey_names)
