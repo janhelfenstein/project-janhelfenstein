@@ -51,6 +51,9 @@ survey_dates <- survey_renamed |>
   relocate(date) |> 
   select(!timestamp) # remove old timestamp variable
 
+# step 3: shorten text values
+trash_locations = c("paths", "picnicareas", "parkinglots", "deepforest", "other")
+trash_types = c("paper", "plasticbottles", "cans", "foodpackaging", "cigarette", "dogwastebag", "clothing", "other")
 
 
 # coerce data types ------------------------
