@@ -9,7 +9,8 @@ library(googlesheets4)
 library(tidyverse)
 
 # import data from google sheet
-survey_raw <- read_sheet("https://docs.google.com/spreadsheets/d/1GKnJ1hurZ5QffM6urSp2GiSltdq1ep2GtML-aTGM6v0/edit?usp=sharing")
+survey_raw <- read_sheet("https://docs.google.com/spreadsheets/d/1IRUdMmEAWMbT-olep1jKo_4UReBfhb8ACsQbxbs__dU")
 
 # store data
 write_csv(survey_raw, "data/raw/survey-raw.csv")
+
