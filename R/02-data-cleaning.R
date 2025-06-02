@@ -2,9 +2,8 @@
 # This script cleans and tidies the data from the google survey about waste separation,
 # which we did in the RBTL course in FS25
 # author: Jan Helfenstein
-# date: 2025-04-01
+# date: 2025-06-02
 
-# I already did this in an module 05 assignment.
 
 # load packages -------------------------
 library(tidyverse)
@@ -19,6 +18,16 @@ survey_data <- read_csv("data/raw/survey-raw.csv")
 
 
 # tidy data from survey -----------------
+
+# rename columns
+survey_renamed <- survey_raw |> 
+  rename(feeling = 2) |> 
+  rename(trash_location = 3) |> 
+  rename(trash_location_today = 4)
+
+
+
+write_rds(survey)
 
 # step 1: create weekday, datetime variable
 # help with perplexity ai:
