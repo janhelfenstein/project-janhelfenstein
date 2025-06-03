@@ -23,22 +23,24 @@ survey_data <- read_csv("data/raw/survey-raw.csv")
 survey_renamed <- survey_raw |> 
   rename(timestamp = Timestamp) |> 
   rename(waste_feeling = 2) |> 
-  rename(waste_location = 3) |> 
-  rename(waste_location_today = 4) |> 
-  rename(waste_type = 5) |> 
-  rename(activities_frequency = 6) |> 
-  rename(activities = 7) |> 
-  rename(activities_today = 8) |> 
-  rename(activities_wasteful = 9) |> 
-  rename(sports_value = 10) |> 
-  rename(sports_waste_frequency = 11) |> 
-  rename(sports_littering = 12) |>
-  rename(sports_event_waste = 13) |> 
-  rename(measures = 14) |> 
-  rename(measures_responsible = 15) |> 
-  rename(measures_frequency = 16) |> 
-  rename(age = 17)
-  rename(gender = 18)
+  rename(waste_rating = 3) |> 
+  rename(waste_location = 4) |> 
+  rename(waste_seen_today = 5) |> 
+  rename(waste_location_today = 6) |> 
+  rename(waste_type = 7) |> 
+  rename(activities_frequency = 8) |> 
+  rename(activities = 9) |> 
+  rename(activities_today = 10) |> 
+  rename(activities_wasteful = 11) |> 
+  rename(sports_value = 12) |> 
+  rename(sports_waste_frequency = 13) |> 
+  rename(sports_littering = 14) |>
+  rename(sports_event_waste = 15) |> 
+  rename(measures = 16) |> 
+  rename(measures_responsible = 17) |> 
+  rename(measures_frequency = 18) |> 
+  rename(age = 19) |> 
+  rename(gender = 20)
 
 
 # step 2: change dates and times, add weekday variable
@@ -51,15 +53,25 @@ survey_dates <- survey_renamed |>
   relocate(date) |> 
   select(!timestamp) # remove old timestamp variable
 
-# step 3: shorten text values
+# step 3: shorten text values -------------------
 # create lists with shorter texts
 trash_locations = c("picnicareas", "paths", "parkinglots", "deepforest", "other")
 trash_types = c("plasticbottles", "cigarette", "paper", "cans", "foodpackaging", "dogwastebag", "clothing", "horse shit", "other")
 activity = c("walking", "biking", "picnic", "photography", "camping", "gathering", "horseriding", "birdwatching", "other")
-measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs",)
+measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs")
 responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 
+survey_shorter1 <- survey_dates |> 
+  mutate()
+
+
+
 # coerce data types ------------------------
+
+
+
+
+
 head(survey_names)
 # todo: recycler_level to always, mostly, some, never
 # recycler_level and disposal_level to factor variables
