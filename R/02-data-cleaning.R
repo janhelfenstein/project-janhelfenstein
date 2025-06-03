@@ -53,10 +53,10 @@ survey_dates <- survey_renamed |>
 
 # step 3: shorten text values
 # create lists with shorter texts
-trash_locations = c("paths", "picnicareas", "parkinglots", "deepforest", "other")
-trash_types = c("paper", "plasticbottles", "cans", "foodpackaging", "cigarette", "dogwastebag", "clothing", "other")
-activity = c("picnic", "camping", "walking", "biking", "horseriding", "photography", "birdwatching", "gathering", "other")
-measure = c("authority", "bins", "signs", "fines", "cleanupevent", "volunteers")
+trash_locations = c("picnicareas", "paths", "parkinglots", "deepforest", "other")
+trash_types = c("plasticbottles", "cigarette", "paper", "cans", "foodpackaging", "dogwastebag", "clothing", "horse shit", "other")
+activity = c("walking", "biking", "picnic", "photography", "camping", "gathering", "horseriding", "birdwatching", "other")
+measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs",)
 responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 
 # coerce data types ------------------------
