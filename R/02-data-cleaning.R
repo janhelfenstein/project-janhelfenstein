@@ -62,7 +62,11 @@ measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs")
 responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 
 survey_shorter1 <- survey_dates |> 
-  mutate()
+  mutate(sports_event_waste = case_when(sports_event_waste == "I'm not sure" ~ "Maybe",
+                                        sports_event_waste == "Yes" ~ "Yes",
+                                        sports_event_waste == "No" ~ "No",
+                                        .default = "Maybe")
+  )
 
 
 
