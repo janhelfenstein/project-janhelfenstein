@@ -64,7 +64,8 @@ survey_id <- survey_id |>
   relocate(age, .after = gender) |> 
   relocate(waste_seen_today, .after = measures_frequency) |>  # move to last column 
   relocate(waste_location_today, .after = waste_seen_today) |> 
-  relocate(waste_type_today, .after = waste_location_today)
+  relocate(waste_type_today, .after = waste_location_today) |> 
+  relocate(activities_today, .after = waste_type_today)
   
 # step 4: shorten text values -------------------
 # create lists with shorter texts
@@ -105,7 +106,8 @@ survey_shorter1 <- survey_shorter1 |>
   mutate(weekday = str_to_lower(weekday))
 
 # separate multiple text values stored in one cell, due to multiple choice questions
-# do it for waste_location and shorten text values
+# then shorten the text values to single words
+# do it for waste_location
 survey_shorter2 <- survey_shorter1 |> 
   separate_longer_delim(waste_location, ", ") |> 
   mutate(waste_location = case_when(waste_location == "Along paths or trails" ~ "paths",
