@@ -64,17 +64,10 @@ survey_id <- survey_id |>
   relocate(age, .after = gender) |> 
   relocate(waste_seen_today, .after = measures_frequency) |>  # move to last column 
   relocate(waste_location_today, .after = waste_seen_today) |> 
-  relocate(waste_type_today, .after = waste_location_today) |> 
-  relocate(activities_today, .after = waste_type_today)
+  relocate(waste_type_today, .after = waste_location_today) 
   
-# step 4: shorten text values -------------------
-# create lists with shorter texts
-trash_locations = c("picnicareas", "paths", "parkinglots", "deepforest", "other")
-trash_types = c("plasticbottles", "cigarette", "paper", "cans", "foodpackaging", "dogwastebag", "clothing", "horse shit", "other")
-activity = c("walking", "biking", "picnic", "photography", "camping", "gathering", "horseriding", "birdwatching", "other")
-measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs")
-responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 
+# step 4: lowercase letters ----------------
 # replace "I'm not sure" answers with "unsure" to have fewer spaces
 # change answers to lower case letters for consistency
 survey_shorter1 <- survey_id |> 
@@ -105,7 +98,15 @@ survey_shorter1 <- survey_shorter1 |>
   mutate(gender = str_to_lower(gender)) |> 
   mutate(weekday = str_to_lower(weekday))
 
-# separate multiple text values stored in one cell, due to multiple choice questions
+# step 5: separate and shorten text values -------------------
+# create lists with shorter texts
+trash_locations = c("picnicareas", "paths", "parkinglots", "deepforest", "other")
+trash_types = c("plasticbottles", "cigarettes", "paper", "cans", "foodpackaging", "dogwastebag", "clothing", "horseshit", "other")
+activity = c("walking", "biking", "picnic", "photography", "camping", "gathering", "horseriding", "birdwatching", "other")
+measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs")
+responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
+
+# separate multiple text values stored in one cell, coming from to multiple choice questions
 # then shorten the text values to single words
 # do it for waste_location
 survey_shorter2 <- survey_shorter1 |> 
@@ -117,6 +118,7 @@ survey_shorter2 <- survey_shorter1 |>
                                     .default = "other")
     )
 
+# do it for activities
 survey_shorter3 <- survey_shorter2 |> 
   separate_longer_delim(activities, ", ") |> 
   mutate(activities = case_when(activities == "Walking / Running" ~ "walking",
@@ -129,7 +131,7 @@ survey_shorter3 <- survey_shorter2 |>
                                 activities == "Gathering" ~ "gathering",
                                 .default = "other"))
 
-# create new dataset for when people answered "saw trash today"
+# do it for activities_today
 survey_shorter4 <- survey_shorter3 |> 
   separate_longer_delim(activities_today, ", ") |> 
   mutate(activities_today = case_when(activities_today == "Walking / Running" ~ "walking",
@@ -142,6 +144,7 @@ survey_shorter4 <- survey_shorter3 |>
                                 activities_today == "Gathering" ~ "gathering",
                                 .default = "other"))
 
+# do it for activities_wasteful
 survey_shorter5 <- survey_shorter4 |> 
   separate_longer_delim(activities_wasteful, ", ") |> 
   mutate(activities_wasteful = case_when(activities_wasteful == "Walking / Running" ~ "walking",
@@ -153,7 +156,7 @@ survey_shorter5 <- survey_shorter4 |>
                                       activities_wasteful == "Bird Watching" ~ "birdwatching",
                                       activities_wasteful == "Gathering" ~ "gathering",
                                       .default = "other"))
-
+# do it for measures
 survey_shorter6 <- survey_shorter5 |> 
   separate_longer_delim(measures, ", ") |> 
   mutate(measures = case_when(measures == "Removal by authorities" ~ "authority",
@@ -163,6 +166,7 @@ survey_shorter6 <- survey_shorter5 |>
                               measures == "Organized clean-up events" ~ "cleanupevent",
                               measures == "Volunteer forest rangers" ~ "volunteers"))
 
+# for measures_responsible, simply shorten the answers to single words
 survey_shorter7 <- survey_shorter6 |> 
   mutate(measures_responsible = case_when(measures_responsible == "Pick up by the one who left it" ~ "litterer",
                                           measures_responsible == "Pick up by authorities" ~ "authority",
@@ -170,24 +174,38 @@ survey_shorter7 <- survey_shorter6 |>
                                           measures_responsible == "I feel responsible to pick it up" ~ "me",
                                           measures_responsible == "Nobody is responsible" ~ "nobody",))
 
-# step 5: create second dataset for the waste situation today: ----------
+# step 6: create second dataset for the waste situation today: ----------
 # when people answered "Yes" to "Have you seen trash in the forest today?"
 
-survey_today <- survey_shorter7 |> 
-  filter(waste_seen_today == "Yes") |> 
+# filtering out participants who didn't see waste today
+# and separating multiple text values in one cell
+survey2 <- survey_shorter7 |> 
+  filter(waste_seen_today == "yes") |> 
   separate_longer_delim(waste_location_today, ", ") |> 
-  separate_longer_delim(waste_type, ", ")
+  separate_longer_delim(waste_type_today, ", ")
 
-write_csv(survey_today, "test.csv")
-
-
-  separate_longer_delim(waste_location_today, ", ") |> 
+# shorten text values to single words
+# first for waste_location_today
+survey2 <- survey2 |> 
   mutate(waste_location_today = case_when(waste_location_today == "Along paths or trails" ~ "paths",
                                     waste_location_today == "Around picnic areas or benches" ~ "picnicareas",
                                     waste_location_today == "Near parking lots" ~ "parkinglots", 
                                     waste_location_today == "Deeper in the forest" ~ "deepforest",
                                     .default = "other")
            )
+
+survey2 <- survey2 |> 
+  mutate(waste_type_today = case_when(waste_type_today == "Paper or Cardboard" ~ "paper",
+                                      waste_type_today == "Plastic Bottles" ~ "plasticbottles",
+                                      waste_type_today == "Cans" ~ "cans",
+                                      waste_type_today == "Food Packaging" ~ "foodpackaging",
+                                      waste_type_today == "Cigarette Butts" ~ "cigarettes",
+                                      waste_type_today == "Dog waste bags" ~ "dogwastebag",
+                                      waste_type_today == "Left-behind clothing items" ~ "clothing",
+                                      waste_type_today == "Horse Shit" ~ "horseshit",
+                                      .default = "other")
+         
+  )
 
 
 
