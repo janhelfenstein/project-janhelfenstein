@@ -245,19 +245,16 @@ levels_weekday <- c("sunday", "monday", "tuesday", "wednesday", "thursday")
 # order for measures: How much is it a personal responsibility vs a collective responsibility
 levels_responsible <- c("litterer", "me", "volunteers", "authorities", "nobody")
 
-# order and create factor variables
+# order and create factor variables for survey1
 survey1_ordered <- survey1 |> 
   mutate(weekday = factor(weekday, levels = levels_weekday)) |> 
   mutate(measures_responsible = factor(measures_responsible, levels = levels_responsible))
 
-head(survey1_ordered)
 
-
-
-
-
-
-
+# repeat for survey2
+survey2_ordered <- survey2 |> 
+  mutate(weekday = factor(weekday, levels = levels_weekday)) |> 
+  mutate(measures_responsible = factor(measures_responsible, levels = levels_responsible))
 
 
 
