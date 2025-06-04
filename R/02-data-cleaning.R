@@ -86,13 +86,23 @@ survey_shorter2 <- survey_shorter1 |>
                                     .default = "other")
     )
 
+# do it for waste_location_today
+# not good yet, filters out too many rows
+survey_shorter3 <- survey_shorter2 |> 
+  filter(!is.na(waste_location_today)) |> 
+  separate_longer_delim(waste_location_today, ", ") |> 
+  mutate(waste_location_today = case_when(waste_location_today == "Along paths or trails" ~ "paths",
+                                    waste_location_today == "Around picnic areas or benches" ~ "picnicareas",
+                                    waste_location_today == "Near parking lots" ~ "parkinglots", 
+                                    waste_location_today == "Deeper in the forest" ~ "deepforest",
+                                    .default = "other")
+           )
 
+
+
+# legacy code, use only for reference ----------
 
 # coerce data types ------------------------
-
-
-
-
 
 head(survey_names)
 # todo: recycler_level to always, mostly, some, never
