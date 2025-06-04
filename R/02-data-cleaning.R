@@ -75,6 +75,7 @@ measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs")
 responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 
 # replace "I'm not sure" answers with "unsure" to have fewer spaces
+# change answers to lower case letters for consistency
 survey_shorter1 <- survey_id |> 
   mutate(sports_event_waste = case_when(sports_event_waste == "I'm not sure" ~ "unsure",
                                         sports_event_waste == "Yes" ~ "yes",
@@ -94,7 +95,14 @@ survey_shorter1 <- survey_shorter1 |>
                                       waste_seen_today == "No" ~ "no")
          )
 
+# do the same to change weekday and gender variables to lowercase,
+# e.g. from "Sunday" to "sunday" and  from "Male" to male"
+# to avoid typing too much I asked ChatGPT, see prompts here:
+# https://chatgpt.com/share/68406f4e-4628-8011-a1cd-6a9b0d268322
 
+survey_shorter1 <- survey_shorter1 |> 
+  mutate(gender = str_to_lower(gender)) |> 
+  mutate(weekday = str_to_lower(weekday))
 
 # separate multiple text values stored in one cell, due to multiple choice questions
 # do it for waste_location and shorten text values
