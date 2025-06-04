@@ -75,6 +75,8 @@ survey_shorter1 <- survey_id |>
 
 
 
+
+
 # separate multiple text values stored in one cell, due to multiple choice questions
 # do it for waste_location and shorten text values
 survey_shorter2 <- survey_shorter1 |> 
@@ -85,6 +87,30 @@ survey_shorter2 <- survey_shorter1 |>
                                     waste_location == "Deeper in the forest" ~ "deepforest",
                                     .default = "other")
     )
+
+survey_shorter3 <- survey_shorter2 |> 
+  separate_longer_delim(activities, ", ") |> 
+  mutate(activities = case_when(activities == "Walking / Running" ~ "walking",
+                                activities == "Barbecue or Picnic" ~ "picnic",
+                                activities == "Cycling / Biking" ~ "biking",
+                                activities == "Photography" ~ "photography",
+                                activities == "Camping" ~ "camping",
+                                activities == "Horse Riding" ~ "horseriding",
+                                activities == "Bird Watching" ~ "birdwatching",
+                                activities == "Gathering" ~ "gathering",
+                                .default = "other"))
+
+survey_shorter4 <- survey_shorter3 |> 
+  separate_longer_delim(activities_today, ", ") |> 
+  mutate(activities_today = case_when(activities_today == "Walking / Running" ~ "walking",
+                                activities_today == "Barbecue or Picnic" ~ "picnic",
+                                activities_today == "Cycling / Biking" ~ "biking",
+                                activities_today == "Photography" ~ "photography",
+                                activities_today == "Camping" ~ "camping",
+                                activities_today == "Horse Riding" ~ "horseriding",
+                                activities_today == "Bird Watching" ~ "birdwatching",
+                                activities_today == "Gathering" ~ "gathering",
+                                .default = "other"))
 
 # do it for waste_location_today
 # not good yet, filters out too many rows
