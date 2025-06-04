@@ -12,10 +12,8 @@ library(dplyr)
 library(lubridate)
 library(readr)
 
-
 # read data from csv -----------
-survey_data <- read_csv("data/raw/survey-raw.csv")
-
+survey_raw <- read_csv("data/raw/survey-raw.csv")
 
 # tidy data from survey -----------------
 
@@ -159,7 +157,7 @@ survey_shorter5 <- survey_shorter4 |>
 # do it for measures
 survey_shorter6 <- survey_shorter5 |> 
   separate_longer_delim(measures, ", ") |> 
-  mutate(measures = case_when(measures == "Removal by authorities" ~ "authority",
+  mutate(measures = case_when(measures == "Removal by authorities" ~ "authorities",
                               measures == "More trash bins" ~ "bins",
                               measures == "Signs telling people to take their trash home" ~ "signs",
                               measures == "Fines for littering" ~ "fines",
@@ -167,9 +165,9 @@ survey_shorter6 <- survey_shorter5 |>
                               measures == "Volunteer forest rangers" ~ "volunteers"))
 
 # for measures_responsible, simply shorten the answers to single words
-survey_shorter7 <- survey_shorter6 |> 
+survey1_almost <- survey_shorter6 |> 
   mutate(measures_responsible = case_when(measures_responsible == "Pick up by the one who left it" ~ "litterer",
-                                          measures_responsible == "Pick up by authorities" ~ "authority",
+                                          measures_responsible == "Pick up by authorities" ~ "authorities",
                                           measures_responsible == "Volunteers should pick it up" ~ "volunteers",
                                           measures_responsible == "I feel responsible to pick it up" ~ "me",
                                           measures_responsible == "Nobody is responsible" ~ "nobody",))
@@ -179,7 +177,7 @@ survey_shorter7 <- survey_shorter6 |>
 
 # filtering out participants who didn't see waste today
 # and separating multiple text values in one cell
-survey2 <- survey_shorter7 |> 
+survey2 <- survey1_almost |> 
   filter(waste_seen_today == "yes") |> 
   separate_longer_delim(waste_location_today, ", ") |> 
   separate_longer_delim(waste_type_today, ", ")
@@ -204,8 +202,62 @@ survey2 <- survey2 |>
                                       waste_type_today == "Left-behind clothing items" ~ "clothing",
                                       waste_type_today == "Horse Shit" ~ "horseshit",
                                       .default = "other")
-         
+         )
+
+# step 7: repeat step 6 for dataset survey1 (which has all participants but many NA cells)
+survey1 <- survey1_almost |> 
+  separate_longer_delim(waste_location_today, ", ") |> 
+  separate_longer_delim(waste_type_today, ", ")
+
+# shorten text values to single words
+# first for waste_location_today
+survey1 <- survey1 |> 
+  mutate(waste_location_today = case_when(waste_location_today == "Along paths or trails" ~ "paths",
+                                          waste_location_today == "Around picnic areas or benches" ~ "picnicareas",
+                                          waste_location_today == "Near parking lots" ~ "parkinglots", 
+                                          waste_location_today == "Deeper in the forest" ~ "deepforest",
+                                          .default = "other")
   )
+
+survey1 <- survey1 |> 
+  mutate(waste_type_today = case_when(waste_type_today == "Paper or Cardboard" ~ "paper",
+                                      waste_type_today == "Plastic Bottles" ~ "plasticbottles",
+                                      waste_type_today == "Cans" ~ "cans",
+                                      waste_type_today == "Food Packaging" ~ "foodpackaging",
+                                      waste_type_today == "Cigarette Butts" ~ "cigarettes",
+                                      waste_type_today == "Dog waste bags" ~ "dogwastebag",
+                                      waste_type_today == "Left-behind clothing items" ~ "clothing",
+                                      waste_type_today == "Horse Shit" ~ "horseshit",
+                                      .default = "other")
+  )
+
+# now I have 2 clean datasets, survey1 and survey2
+# survey1 has all the participants 
+# but also all those who said "No, I haven't seen trash today"
+# --> survey1 has lots of NA cells for waste_location_today and waste_type_today
+# survey 2 has only those people who answered "Yes, I've seen trash today"
+
+# step 8: create ordered factor variable for measures_responsible and weekday ------------
+
+# order for weekday: Survey started on Sunday, ended on Thursday
+levels_weekday <- c("sunday", "monday", "tuesday", "wednesday", "thursday")
+
+# order for measures: How much is it a personal responsibility vs a collective responsibility
+levels_responsible <- c("litterer", "me", "volunteers", "authorities", "nobody")
+
+# order and create factor variables
+survey1_ordered <- survey1 |> 
+  mutate(weekday = factor(weekday, levels = levels_weekday)) |> 
+  mutate(measures_responsible = factor(measures_responsible, levels = levels_responsible))
+
+head(survey1_ordered)
+
+
+
+
+
+
+
 
 
 
@@ -215,9 +267,7 @@ survey2 <- survey2 |>
 
 head(survey_names)
 # todo: recycler_level to always, mostly, some, never
-# recycler_level and disposal_level to factor variables
-levels_recycling <- c("always", "mostly", "sometimes", "never")
-levels_disposal <- c("fee-bag", "non-fee-bag", "public-bin", "bushes", "toilet", "hole", "fire")
+
 
 # check levels
 # survey_names$disposal_level
@@ -244,9 +294,6 @@ survey_cat <- survey_names |>
   select(!disposal_level) |> 
   select(!recycler_level)
 
-# define PET and banana recycling levels
-levels_park_recycling = c("bushes", "on-full-bin", "next-to-bin", "find-recycling", "take-home", "other")
-
 # categorize park recycling variables
 survey_cat2 <- survey_cat |> 
   mutate(pet_cat = case_when(pet_recycler == "I try to somehow balance my bottle on top of the full bin." ~ "on-full-bin",
@@ -267,6 +314,12 @@ survey_cat2 <- survey_cat |>
   ) |> 
   select(!pet_recycler) |> 
   select(!banana_recycler)
+
+# recycler_level and disposal_level to factor variables
+levels_recycling <- c("always", "mostly", "sometimes", "never")
+levels_disposal <- c("fee-bag", "non-fee-bag", "public-bin", "bushes", "toilet", "hole", "fire")
+# define PET and banana recycling levels
+levels_park_recycling = c("bushes", "on-full-bin", "next-to-bin", "find-recycling", "take-home", "other")
 
 # order recycler_cat, disposal_cat, pet_recycler, banana_recycler with factor variables
 survey_order <- survey_cat2 |> 
