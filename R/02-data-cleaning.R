@@ -53,7 +53,12 @@ survey_dates <- survey_renamed |>
   relocate(date) |> 
   select(!timestamp) # remove old timestamp variable
 
-# step 3: shorten text values -------------------
+# step 3: add a column "id"
+survey_id <- survey_dates |> 
+  mutate(id = row_number()) |> 
+  relocate(id) # move to the front
+
+# step 4: shorten text values -------------------
 # create lists with shorter texts
 trash_locations = c("picnicareas", "paths", "parkinglots", "deepforest", "other")
 trash_types = c("plasticbottles", "cigarette", "paper", "cans", "foodpackaging", "dogwastebag", "clothing", "horse shit", "other")
@@ -61,12 +66,25 @@ activity = c("walking", "biking", "picnic", "photography", "camping", "gathering
 measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs")
 responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 
-survey_shorter1 <- survey_dates |> 
-  mutate(sports_event_waste = case_when(sports_event_waste == "I'm not sure" ~ "Maybe",
-                                        sports_event_waste == "Yes" ~ "Yes",
-                                        sports_event_waste == "No" ~ "No",
-                                        .default = "Maybe")
+survey_shorter1 <- survey_id |> 
+  mutate(sports_event_waste = case_when(sports_event_waste == "I'm not sure" ~ "unsure",
+                                        sports_event_waste == "Yes" ~ "yes",
+                                        sports_event_waste == "No" ~ "no",
+                                        .default = "unsure")
   )
+
+
+
+# separate multiple text values stored in one cell, due to multiple choice questions
+# do it for waste_location and shorten text values
+survey_shorter2 <- survey_shorter1 |> 
+  separate_longer_delim(waste_location, ", ") |> 
+  mutate(waste_location = case_when(waste_location == "Along paths or trails" ~ "paths",
+                                    waste_location == "Around picnic areas or benches" ~ "picnicareas",
+                                    waste_location == "Near parking lots" ~ "parkinglots", 
+                                    waste_location == "Deeper in the forest" ~ "deepforest",
+                                    .default = "other")
+    )
 
 
 
