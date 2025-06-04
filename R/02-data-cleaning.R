@@ -27,7 +27,7 @@ survey_renamed <- survey_raw |>
   rename(waste_location = 4) |> 
   rename(waste_seen_today = 5) |> 
   rename(waste_location_today = 6) |> 
-  rename(waste_type = 7) |> 
+  rename(waste_type_today = 7) |> 
   rename(activities_frequency = 8) |> 
   rename(activities = 9) |> 
   rename(activities_today = 10) |> 
@@ -53,11 +53,19 @@ survey_dates <- survey_renamed |>
   relocate(date) |> 
   select(!timestamp) # remove old timestamp variable
 
-# step 3: add a column "id"
+# step 3: add a column "id" and reorder
 survey_id <- survey_dates |> 
   mutate(id = row_number()) |> 
   relocate(id) # move to the front
 
+# reorder: demographic data to the front, waste info of today to the back
+survey_id <- survey_id |> 
+  relocate(gender, .after = weekday) |> 
+  relocate(age, .after = gender) |> 
+  relocate(waste_seen_today, .after = measures_frequency) |>  # move to last column 
+  relocate(waste_location_today, .after = waste_seen_today) |> 
+  relocate(waste_type_today, .after = waste_location_today)
+  
 # step 4: shorten text values -------------------
 # create lists with shorter texts
 trash_locations = c("picnicareas", "paths", "parkinglots", "deepforest", "other")
@@ -66,14 +74,25 @@ activity = c("walking", "biking", "picnic", "photography", "camping", "gathering
 measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs")
 responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 
+# replace "I'm not sure" answers with "unsure" to have fewer spaces
 survey_shorter1 <- survey_id |> 
   mutate(sports_event_waste = case_when(sports_event_waste == "I'm not sure" ~ "unsure",
                                         sports_event_waste == "Yes" ~ "yes",
                                         sports_event_waste == "No" ~ "no",
                                         .default = "unsure")
-  )
+        )
 
+survey_shorter1 <- survey_shorter1 |> 
+  mutate(sports_littering = case_when(sports_littering == "I'm not sure" ~ "unsure",
+                                      sports_littering == "Yes" ~ "yes",
+                                      sports_littering == "No" ~ "no",
+                                      .default = "unsure")
+        )
 
+survey_shorter1 <- survey_shorter1 |> 
+  mutate(waste_seen_today = case_when(waste_seen_today == "Yes" ~ "yes",
+                                      waste_seen_today == "No" ~ "no")
+         )
 
 
 
@@ -100,6 +119,7 @@ survey_shorter3 <- survey_shorter2 |>
                                 activities == "Gathering" ~ "gathering",
                                 .default = "other"))
 
+# create new dataset for when people answered "saw trash today"
 survey_shorter4 <- survey_shorter3 |> 
   separate_longer_delim(activities_today, ", ") |> 
   mutate(activities_today = case_when(activities_today == "Walking / Running" ~ "walking",
@@ -112,10 +132,45 @@ survey_shorter4 <- survey_shorter3 |>
                                 activities_today == "Gathering" ~ "gathering",
                                 .default = "other"))
 
-# do it for waste_location_today
-# not good yet, filters out too many rows
-survey_shorter3 <- survey_shorter2 |> 
-  filter(!is.na(waste_location_today)) |> 
+survey_shorter5 <- survey_shorter4 |> 
+  separate_longer_delim(activities_wasteful, ", ") |> 
+  mutate(activities_wasteful = case_when(activities_wasteful == "Walking / Running" ~ "walking",
+                                      activities_wasteful == "Barbecue or Picnic" ~ "picnic",
+                                      activities_wasteful == "Cycling / Biking" ~ "biking",
+                                      activities_wasteful == "Photography" ~ "photography",
+                                      activities_wasteful == "Camping" ~ "camping",
+                                      activities_wasteful == "Horse Riding" ~ "horseriding",
+                                      activities_wasteful == "Bird Watching" ~ "birdwatching",
+                                      activities_wasteful == "Gathering" ~ "gathering",
+                                      .default = "other"))
+
+survey_shorter6 <- survey_shorter5 |> 
+  separate_longer_delim(measures, ", ") |> 
+  mutate(measures = case_when(measures == "Removal by authorities" ~ "authority",
+                              measures == "More trash bins" ~ "bins",
+                              measures == "Signs telling people to take their trash home" ~ "signs",
+                              measures == "Fines for littering" ~ "fines",
+                              measures == "Organized clean-up events" ~ "cleanupevent",
+                              measures == "Volunteer forest rangers" ~ "volunteers"))
+
+survey_shorter7 <- survey_shorter6 |> 
+  mutate(measures_responsible = case_when(measures_responsible == "Pick up by the one who left it" ~ "litterer",
+                                          measures_responsible == "Pick up by authorities" ~ "authority",
+                                          measures_responsible == "Volunteers should pick it up" ~ "volunteers",
+                                          measures_responsible == "I feel responsible to pick it up" ~ "me",
+                                          measures_responsible == "Nobody is responsible" ~ "nobody",))
+
+# step 5: create second dataset for the waste situation today: ----------
+# when people answered "Yes" to "Have you seen trash in the forest today?"
+
+survey_today <- survey_shorter7 |> 
+  filter(waste_seen_today == "Yes") |> 
+  separate_longer_delim(waste_location_today, ", ") |> 
+  separate_longer_delim(waste_type, ", ")
+
+write_csv(survey_today, "test.csv")
+
+
   separate_longer_delim(waste_location_today, ", ") |> 
   mutate(waste_location_today = case_when(waste_location_today == "Along paths or trails" ~ "paths",
                                     waste_location_today == "Around picnic areas or benches" ~ "picnicareas",
