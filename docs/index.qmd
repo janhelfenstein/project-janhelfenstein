@@ -145,40 +145,34 @@ survey_weekday |>
 write_csv(survey_weekday, here::here("data/final/tbl-weekday-gender.csv"))
 ```
 
-The second figure @fig-weekday displays the number of answers per day, while also showing a more visible distinction between male and female responses. 11 people were met in-person in the forest on Sunday evening, of which most were male. From Monday to Thursday, responses came from people answering the questionnaire online. Most answers came in on Monday, when the link to the survey was posted in a WhatsApp group chat for students living in student housing on Campus Hoenggerberg, which is only 200 meters away from the Kaeferberg forest. Most of these participants were also male.
+The second figure @fig-weekday also displays the number of answers per day, while also showing a more visible distinction between male and female responses. 12 people were met in-person in the forest on Sunday evening, of which most were male. One additional person answered the survey online later. From Monday to Thursday, responses came only from people answering the questionnaire online. Most of these answers came in on Monday, when the link to the survey was posted in a WhatsApp group chat for students living in student housing on Campus Hoenggerberg, which is only 200 meters away from the Kaeferberg forest. Most of these participants were also male.
 
 ```{r}
 #| label: fig-weekday
 #| fig-cap: "Number of answers per day"
 
-survey_demography <- survey_small |> 
+# same dataframe as in the code block above
+survey_weekday <- survey_small |> 
   group_by(weekday, gender) |> 
-  summarise(amount = n())
+  summarize(amount = n())
 
-# Plot using geom_col and add text labels
-ggplot(data = survey_demography, 
-       aes(x = weekday, y = amount, fill = gender)) + 
+# adding the white labelling in this plot was done with the help of ChatGPT, prompt:
+# https://chatgpt.com/share/6841b0b5-c2e4-8011-b70d-c15aacb89456
+ggplot(data = survey_weekday, 
+       mapping = aes(x = weekday,
+                     y = amount,
+                     fill = gender)) + 
   geom_col(position = "stack") +
   geom_text(aes(label = amount), 
             position = position_stack(vjust = 0.5), 
-            color = "white")
-
-
-survey_vis2 <- survey_small |> 
-  group_by(weekday) |> 
-  mutate(amount = n())
-
-ggplot(data = survey_vis2, 
-       mapping = aes(x = weekday,
-                     fill = gender
-                    )
-       ) + 
-  geom_bar() +
-  geom_text(amount) +
-  labs(x = "weekday the survey was taken", y = "number of answers")
+            color = "white") +
+  labs(x = "weekday the survey was taken",
+       y = "number of answers")
 ```
 
 ------------------------------------------------------------------------
+
+The following table highlights the demography of the
 
 In the first question of the survey, people were shown a picture of a plastic cup on forest ground. They were asked about their feeling when seeing trash in the forest, from 1 to 5 (1 = very upset, 5 = very happy.)
 
