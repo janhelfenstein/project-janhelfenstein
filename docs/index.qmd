@@ -7,7 +7,7 @@ format:
     embed-resources: true
     toc: true
 execute:
-  warning: false
+  warning: true
 editor_options: 
   chunk_output_type: console
 editor: visual
@@ -32,7 +32,7 @@ For this project, a total of 27 participants were asked about their assessment o
 |------------------------------------|------------------------------------|
 | ![](images/clipboard-2887181069.png) | ![](images/clipboard-1730554855.jpeg) |
 
-#### site plan
+#### Site plan
 
 The following satellite view show the site of the survey: The survey was conducted in the two forests "Hoenggerberg forest" and Kaeferberg forest in the north of Zurich.
 
@@ -147,7 +147,7 @@ The figure is a bit hard to read, because most people filled the survey at aroun
 
 ```{r}
 #| label: tbl-weekday-gender
-#| tbl-cap: "Number of participants per weekday"
+#| tbl-cap: Number of participants per weekday
 survey_weekday <- survey_small |> 
   group_by(weekday, gender) |> 
   summarize(amount = n())
@@ -233,13 +233,7 @@ ggplot(data = survey_small,
        x = "age in years", y = "feeling when seeing forest waste")
 ```
 
-The first table @tbl-statistics1 lists the average and median ages of the participants, grouped by gender. The average age is close to the median age, around 33 to 34. However, the standard deviation is quite large, so there are outliers: Some participants were much older than others. The maximum age was 63, as shown above in @fig_demography .
-
-The table also provides info about how the participants rate the cleanliness of Zurichs forests on average, and the median. Since the standard deviation is low and the mean is close to the average, it can be concluded that most people rate the cleanliness between 3.5 and 4 and there are no significant outliers. However, the range (from 1 to 5) is quite small, so this has to be kept in mind.
-
-The greatest agreement is in the participant's feeling when seeing waste in the forest: All participants report a bad feeling (1 or 2) when seeing forest waste. The average and the median are close to 1, and the standard deviation is low.
-
-In conclusion: While participants deem that Zurichs forests are clean, any small amount of waste seen is perceived as very negative. So, according to participants, even small amounts of waste have to be avoided at all costs.
+The first table @tbl-statistics1 lists the average and median ages of the participants, grouped by gender. The average age is close to the median age, around 33 to 34. However, the standard deviation is quite large, so there are outliers: Some participants were much older than others. The maximum age was 63, as shown above in @fig_demography
 
 ```{r}
 survey_statistics <- survey_small |> 
@@ -267,8 +261,8 @@ write_csv(survey_table_gender1, here::here("data/final/tbl-statistics1.csv"))
 ```
 
 ```{r}
-#|label: tbl-statistics1
-#|tbl-cap: "Statistical data of the survey, part 1"
+#| label: tbl-statistics1
+#| tbl-cap: "Statistical data of the survey part 1"
 
 survey_table_gender1 |> 
   gt() |> 
@@ -276,8 +270,13 @@ survey_table_gender1 |>
   tab_header(title = "statistical table of participants age, their forest-rating and their feeling when seeing forest waste",
              subtitle = "data from 27 forest users in June 2025, grouped by gender")
 
-
 ```
+
+The table also provides info about how the participants rate the cleanliness of Zurichs forests on average, and the median. Since the standard deviation is low and the mean is close to the average, it can be concluded that most people rate the cleanliness between 3.5 and 4 and there are no significant outliers. However, the range (from 1 to 5) is quite small, so this has to be kept in mind.
+
+The greatest agreement is in the participant's feeling when seeing waste in the forest: All participants report a bad feeling (1 or 2) when seeing forest waste. The average and the median are close to 1, and the standard deviation is low.
+
+In conclusion: While participants deem that Zurichs forests are clean, any small amount of waste seen is perceived as very negative. So, according to participants, even small amounts of waste have to be avoided at all costs.
 
 The same conclusions can be made from the following graphic, which shows yet again how participants rate the cleanliness of Zurichs forests, charted by age and gender.
 
@@ -297,14 +296,7 @@ ggplot(data = survey_small,
 
 ```
 
-The next table @tbl-statistics2 shows more statistical insights. It shows that the numbers for weekly forest visits and the value of forest sports are close for both women and men. Men tend to visit the forest slightly more often than women, and rate the value of sports activities in the forest higher. But the difference between the two genders is small when compared to the standard deviations.
-
-A bigger difference can be seen for the suggested number of removal-days per year. Women are generally in favor of more waste-removal-days per year than the men, as shown in the mean and median values. However, the male participants propose a larger range of removal days by authorities, with a minimum of 6 and a maximum of 180. Although, since there are many more men that participated in the survey, this bigger number of responses could be the cause for the wider numerical span, and doesn't necessarily have to be due to the gender.
-
 ```{r}
-#|label: tbl-statistics2
-#|tbl-cap: "statistical data of the survey, part 2"
-
 survey_table_gender2 <- survey_statistics |> 
     filter(!is.na(activities_frequency))  |>  # remove NA values
     select(gender, activities_frequency, sports_value, measures_frequency) |> 
@@ -324,6 +316,15 @@ survey_table_gender2 <- survey_statistics |>
     )
 
 write_csv(survey_table_gender2, here::here("data/final/tbl-statistics2.csv"))
+```
+
+The next table @tbl-statistics2 shows more statistical insights. It shows that the numbers for weekly forest visits and the value of forest sports are close for both women and men. Men tend to visit the forest slightly more often than women, and rate the value of sports activities in the forest higher. But the difference between the two genders is small when compared to the standard deviations.
+
+A bigger difference can be seen for the suggested number of removal-days per year. Women are generally in favor of more waste-removal-days per year than the men, as shown in the mean and median values. However, the male participants propose a larger range of removal days by authorities, with a minimum of 6 and a maximum of 180. Although, since there are many more men that participated in the survey, this bigger number of responses could be the cause for the wider numerical span, and doesn't necessarily have to be due to the gender.
+
+```{r}
+#| label: tbl-statistics2
+#| tbl-cap: "statistical data of the survey, part 2"
 
 survey_table_gender2 |> 
   gt() |> 
@@ -346,23 +347,35 @@ ggplot(data = survey_small,
        ) + 
   geom_point(size = 3) +
   labs(title = "number of days per year where authorities remove forest waste",
-       x = "age in years", y = "suggested days of waste-removal")
+       x = "age in years", 
+       y = "suggested days of waste-removal")
 ```
 
-The next bar plot @fig-visits shows the relation between the participants' forest-visiting frequency and their rating of the forest's cleanliness. Generally, people who visit the forest more often tend to give a higher rating.
+The next plot @fig-visits shows the relation between the participants' forest-visiting frequency and their rating of the forest's cleanliness. Jitter was used to highlight stacked data points, where multiple participants have the same days in the forest and the give the same cleanliness rating. Generally, people who visit the forest more often tend to give a higher rating. One interpretation of this would be that people who visit the forest more often can better assess the situation. People who visit the forest less often may have a distorted view of litter in the forest, with a trend to a more negative rating.
 
 ```{r}
 #| label: fig-visits
-#| fig-cap: "Rating of cleanliness in Zurich's forest by groups with different visiting frequencies"
+#| fig-cap: "forest cleanliness rating by groups with different visiting frequencies"
 
 ggplot(data = survey_small, 
-       mapping = aes(x = waste_rating,
-                     fill = activities_frequency
+       mapping = aes(x = activities_frequency,
+                     y = waste_rating,
                     )
        ) + 
-  geom_bar(width = 0.2) +
-  labs(title = "Rating of Zurich's forest cleanliness",
-       subtitle = "answers from 24 forest users")
+  geom_point(shape = 1, size = 3) +
+  geom_jitter(width = 0.1, height = 0.1) +
+  labs(title = "Forest cleanliness, depending on visiting frequency",
+       subtitle = "answers from 27 forest users",
+       x = "Days per week spent in the forest",
+       y = "Perceived forest cleanliness")
 ```
 
-want: a plot that shows perceived cleanliness average per day
+### Pie charts
+
+## Conclusion
+
+As a result of this survey, it was found that most people think that litter in the forest is concentrated around picnic spots and benches, and mainly consists of consumer waste like plastic bottles, cans, and cigarette butts. Although the participants generally rated the forest’s waste situation in a positive way (with an average score of 4 out of 5), they report deeply negative feelings (scoring 1 or 2 out of 5) when seeing waste in the forest. The waste was identified to come from activities such as barbecuing, picnicking, and camping as the primary sources. In contrast, sports activities were not seen as a major contributor to the problem.
+
+When it comes to removing waste, participants favored solutions that emphasize individual responsibility. They supported that people clean up their own litter, and further suggested adding more waste bins throughout the forest. Fines weree seen as a good measure to enforce this accountability. The second most preferred option were cleaning activities carried out by authorities or volunteers.
+
+The demographical data showed no significant trends towards gender. Older people tended to react more negatively towards waste, and gave the forests a lower cleanliness rating. But since the sample size was small, the significance assessment should not be overexaggerated.
