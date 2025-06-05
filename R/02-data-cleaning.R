@@ -99,12 +99,6 @@ survey_short1 <- survey_short1 |>
   mutate(weekday = str_to_lower(weekday))
 
 # step 5: separate and shorten text values -------------------
-# create lists with shorter texts
-trash_locations = c("picnicareas", "paths", "parkinglots", "deepforest", "other")
-trash_types = c("plasticbottles", "cigarettes", "paper", "cans", "foodpackaging", "dogwastebag", "clothing", "horseshit", "other")
-activity = c("walking", "biking", "picnic", "photography", "camping", "gathering", "horseriding", "birdwatching", "other")
-measure = c("bins", "fines", "authority", "cleanupevent", "volunteers", "signs")
-responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 
 # separate multiple text values stored in one cell, coming from to multiple choice questions
 # then shorten the text values to single words
