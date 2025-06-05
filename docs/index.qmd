@@ -324,20 +324,20 @@ A bigger difference can be seen for the suggested number of removal-days per yea
 
 ```{r}
 #| label: tbl-statistics2
-#| tbl-cap: "statistical data of the survey, part 2"
+#| tbl-cap: "Statistical data of the survey, part 2"
 
 survey_table_gender2 |> 
   gt() |> 
   fmt_number(decimals = 1) |> 
-  tab_header(title = "statistical table of participants visiting frequency, their value of forest sports, and their suggested waste-removal days per year",
-             subtitle = "data from 27 forest users in June 2025, grouped by gender")
+  tab_header(title = "Participants visiting frequency, their value of forest sports, and their suggested waste-removal days per year",
+             subtitle = "Data from 27 forest users in June 2025, grouped by gender")
 ```
 
 The distribution of suggested removal days is also shown in the following diagram @fig-age-gender-removalfrequency . It seems that most people desire regular waste-removal by authorities every week, indicated by the large amount of data points around the number 52. But some are also satisfied with a monthly waste-removal schedule, which corresponds to 12 removal days per year.
 
 ```{r}
 #| label: fig-age-gender-removalfrequency
-#| fig-cap: "number of days per year where authorities remove forest waste"
+#| fig-cap: "Suggested number of days per year for waste-removal by authorities"
 ggplot(data = survey_small, 
        mapping = aes(x = age,
                      y = measures_frequency,
@@ -346,7 +346,7 @@ ggplot(data = survey_small,
                     )
        ) + 
   geom_point(size = 3) +
-  labs(title = "number of days per year where authorities remove forest waste",
+  labs(title = "Suggested number of days per year for waste-removal by authorities",
        x = "age in years", 
        y = "suggested days of waste-removal")
 ```
@@ -370,7 +370,78 @@ ggplot(data = survey_small,
        y = "Perceived forest cleanliness")
 ```
 
-### Pie charts
+### Waste origins
+
+In this section, the reported waste types and locations are analyzed.
+
+```{r}
+waste_types <- survey2 |> 
+  select(id, waste_type_today) |> 
+  group_by(waste_type_today) |> 
+  distinct() |> 
+  summarize(count = n())
+
+write_csv(waste_types, here::here("data/final/waste_types.csv"))
+```
+
+The following @fig-waste-types shows the different trash items that forest users found on that day. Not much more can be interpreted from this data, other than there seems to be a trend to consumer items such as plastic bottles, cigarettes, cans and food packaging landing in the forest more often. However, almost nobody used the "other" option in the survey to manually report other trash items found in the forest. In fact, only 1 person used this option, and wrote "horse shit".
+
+```{r}
+#| label: fig-waste-types
+#| fig-cap: "Waste types seen by forest users"
+
+ggplot(data = waste_types,
+       mapping = aes(x = waste_type_today,
+                     y = count)
+) +
+  geom_col() +
+  labs(y = "Waste type seen today")
+
+```
+
+```{r}
+waste_location <- survey2 |> 
+  select(id, waste_location) |> 
+  group_by(waste_location) |> 
+  distinct() |> 
+  select(!id) |> 
+  summarize(count = n())
+
+waste_location_today <- survey2 |> 
+  select(id, waste_location_today) |>
+  rename(waste_location = waste_location_today) |> 
+  group_by(waste_location) |> 
+  distinct() |> 
+  select(!id) |> 
+  summarize(count = n())
+
+write_csv(waste_location, here::here("data/final/waste_location.csv"))
+write_csv(waste_location_today, here::here("data/final/waste_location_today.csv"))
+```
+
+The following graph @fig-waste-location displays how forest users report where they see waste in the forest in general, and on the day they took the survey. What stands out is that people think that waste is concentrated mainly around picnic areas. But on the other hand, on the day they took the survey, they saw most of the waste along paths or trails. There might be some bias, coming from past experiences where people saw very dirty picnic areas in the forest.
+
+```{r}
+#| label: fig-waste-location
+#| fig-cap: "Comparison of waste locations in the forest, in general and today"
+
+# I used ChatGPT to combine the 2 dataframes, prompt:
+# https://chatgpt.com/share/68421141-9c14-8011-9448-3ecde5165ada
+waste_location$source <- "forest waste in general"
+waste_location_today$source <- "forest waste today"
+
+waste_combined <- rbind(waste_location, waste_location_today)
+
+ggplot(data = waste_combined, 
+       aes(x = waste_location, 
+           y = count, 
+           fill = source)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Comparison of waste locations in the forest, in general and today",
+       x = "location", 
+       y = "count") +
+  theme_minimal()
+```
 
 ## Conclusion
 
