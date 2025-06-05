@@ -13,7 +13,7 @@ editor_options:
 editor: visual
 ---
 
-# Waste in Zurichs Forests - Report
+# Waste in Swiss Forests - Report
 
 ## Abstract
 
@@ -99,24 +99,41 @@ ggplot(data = survey_vis,
 
 ```
 
----
-
-The next bar plot @fig-recycling shows the relation between the participants' recycling frequency and their rating of ETH's recycling situation. Generally, people who recycle more often tend to give a higher rating.
+second figure: problem: each row counts as a person.
 
 ```{r}
-#| label: fig-recycling
-#| fig-cap: "Rating of ETH's recycling situation by groups with different recycling frequencies"
+#| label: fig-rating2
+#| fig-cap: "Survey timeline and perceived cleanliness of the forest"
+survey1_vis <- survey1 |> 
+  group_by(id) |> 
+  mutate(amount = n())
+
+ggplot(data = survey1_vis, 
+       mapping = aes(x = weekday
+                     #y = waste_rating
+                    )
+       ) + 
+  geom_bar() +
+  #geom_point(shape = 2, size = 3) + 
+  labs(x = "survey weekday", y = "perceived forest cleanliness")
+```
+
+------------------------------------------------------------------------
+
+The next bar plot @fig-recycling shows the relation between the participants' forest-visiting frequency and their rating of the forest's cleanliness. Generally, people who visit the forest more often tend to give a higher rating.
+
+```{r}
+#| label: fig-visits
+#| fig-cap: "Rating of cleanliness in Zurich's forest by groups with different visiting frequencies"
+
 ggplot(data = survey_vis, 
-       mapping = aes(x = rating,
-                     fill = recycling_frequency
+       mapping = aes(x = waste_rating,
+                     fill = activities_frequency
                     )
        ) + 
   geom_bar(width = 0.2) +
-  labs(title = "Rating of ETH's recycling situation",
-       subtitle = "answers from 7 students",
-       fill = "recycling frequency")
-
-?labs
+  labs(title = "Rating of Zurich's forest cleanliness",
+       subtitle = "answers from 24 forest users")
 ```
 
 The following pie chart visualizes the recycling frequency:

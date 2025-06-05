@@ -47,13 +47,17 @@ survey_renamed <- survey_renamed |>
   mutate(weekday = wday(timestamp, label = TRUE, abb = FALSE)) |> 
   relocate(weekday) |> 
   relocate(time) |> 
-  relocate(date)
+  relocate(date) |> 
+  relocate(timestamp) # timestamp to the front
 
+# create dataset with no timestamp variable
+# this dataset is "cleaner" because the time info is not saved twice
+# but for data visualization it is easier to use the survey_renamed dataset
 survey_dates <- survey_renamed |> 
-  select(!timestamp) # remove old timestamp variable
+  select(!timestamp) 
 
 # step 3: add a column "id" and reorder
-survey_id <- survey_dates |> 
+survey_id <- survey_renamed |> 
   mutate(id = row_number()) |> 
   relocate(id) # move to the front
 
@@ -99,12 +103,38 @@ survey_short1 <- survey_short1 |>
   mutate(gender = str_to_lower(gender)) |> 
   mutate(weekday = str_to_lower(weekday))
 
-# step 5: separate and shorten text values -------------------
+# Shorten texts for measures_responsible
+survey_short1 <- survey_short1 |> 
+  mutate(measures_responsible = case_when(measures_responsible == "Pick up by the one who left it" ~ "litterer",
+                                          measures_responsible == "Pick up by authorities" ~ "authorities",
+                                          measures_responsible == "Volunteers should pick it up" ~ "volunteers",
+                                          measures_responsible == "I feel responsible to pick it up" ~ "me",
+                                          measures_responsible == "Nobody is responsible" ~ "nobody",))
+
+
+# step 5: create ordered factor variable for measures_responsible and weekday ------------
+
+# order for weekday: Survey started on Sunday, ended on Thursday
+levels_weekday <- c("sunday", "monday", "tuesday", "wednesday", "thursday")
+
+# order for measures: How much is it a personal responsibility vs a collective responsibility
+levels_responsible <- c("litterer", "me", "volunteers", "authorities", "nobody")
+
+# order and create factor variables for survey1
+survey_ordered <- survey_short1 |> 
+  mutate(weekday = factor(weekday, levels = levels_weekday)) |> 
+  mutate(measures_responsible = factor(measures_responsible, levels = levels_responsible))
+
+# This dataset survey_ordered will be used for some visualization tasks
+# It has the benefit of having 1 row per participant
+# But it is not a clean dataset, because it has multiple values in a single cell in some columns
+
+# step 6: separate and shorten text values -------------------
 
 # separate multiple text values stored in one cell, coming from to multiple choice questions
 # then shorten the text values to single words
 # do it for waste_location
-survey_short2 <- survey_short1 |> 
+survey_short2 <- survey_ordered |> 
   separate_longer_delim(waste_location, ", ") |> 
   mutate(waste_location = case_when(waste_location == "Along paths or trails" ~ "paths",
                                     waste_location == "Around picnic areas or benches" ~ "picnicareas",
@@ -161,20 +191,12 @@ survey_short6 <- survey_short5 |>
                               measures == "Organized clean-up events" ~ "cleanupevent",
                               measures == "Volunteer forest rangers" ~ "volunteers"))
 
-# for measures_responsible, simply shorten the answers to single words
-survey_short7 <- survey_short6 |> 
-  mutate(measures_responsible = case_when(measures_responsible == "Pick up by the one who left it" ~ "litterer",
-                                          measures_responsible == "Pick up by authorities" ~ "authorities",
-                                          measures_responsible == "Volunteers should pick it up" ~ "volunteers",
-                                          measures_responsible == "I feel responsible to pick it up" ~ "me",
-                                          measures_responsible == "Nobody is responsible" ~ "nobody",))
-
-# step 6: create second dataset for the waste situation today: ----------
+# step 7: create second dataset for the waste situation today: ----------
 # when people answered "Yes" to "Have you seen trash in the forest today?"
 
 # filtering out participants who didn't see waste today
 # and separating multiple text values in one cell
-survey2_short <- survey_short7 |> 
+survey2_short <- survey_short6 |> 
   filter(waste_seen_today == TRUE) |> 
   separate_longer_delim(waste_location_today, ", ") |> 
   separate_longer_delim(waste_type_today, ", ")
@@ -201,8 +223,8 @@ survey2_short <- survey2_short |>
                                       .default = "other")
          )
 
-# step 7: repeat step 6 for dataset survey1 (which has all participants but many NA cells)
-survey1_short <- survey_short7 |> 
+# step 8: repeat step 6 for dataset survey1 (which has all participants but many NA cells)
+survey1_short <- survey_short6 |> 
   separate_longer_delim(waste_location_today, ", ") |> 
   separate_longer_delim(waste_type_today, ", ")
 
@@ -234,31 +256,13 @@ survey1_short <- survey1_short |>
 # --> survey1 has lots of NA cells for waste_location_today and waste_type_today
 # survey 2 has only those people who answered "Yes, I've seen trash today"
 
-# step 8: create ordered factor variable for measures_responsible and weekday ------------
-
-# order for weekday: Survey started on Sunday, ended on Thursday
-levels_weekday <- c("sunday", "monday", "tuesday", "wednesday", "thursday")
-
-# order for measures: How much is it a personal responsibility vs a collective responsibility
-levels_responsible <- c("litterer", "me", "volunteers", "authorities", "nobody")
-
-# order and create factor variables for survey1
-survey1_ordered <- survey1_short |> 
-  mutate(weekday = factor(weekday, levels = levels_weekday)) |> 
-  mutate(measures_responsible = factor(measures_responsible, levels = levels_responsible))
-
-# repeat for survey2
-survey2_ordered <- survey2_short |> 
-  mutate(weekday = factor(weekday, levels = levels_weekday)) |> 
-  mutate(measures_responsible = factor(measures_responsible, levels = levels_responsible))
-
 # step 9: write csv and rds in the processed directory
 # write csv and rds in processed
-write_csv(survey1_ordered, "data/processed/survey1-data-processed.csv")
-write_csv(survey2_ordered, "data/processed/survey2-data-processed.csv")
-write_rds(survey1_ordered, "data/processed/survey1-data-processed.rds")
-write_rds(survey2_ordered, "data/processed/survey2-data-processed.rds")
+write_csv(survey1_short, "data/processed/survey1-data-processed.csv")
+write_csv(survey2_short, "data/processed/survey2-data-processed.csv")
+write_rds(survey1_short, "data/processed/survey1-data-processed.rds")
+write_rds(survey2_short, "data/processed/survey2-data-processed.rds")
 
-# save survey_renamed for the sake of timestamp data
-write_csv(survey_renamed, "data/processed/survey-timestamp.csv")
-write_rds(survey_renamed, "data/processed/survey-timestamp.rds")
+# save survey_ordered for the sake of having 1 row per participant
+write_csv(survey_ordered, "data/processed/survey-timestamp.csv")
+write_rds(survey_ordered, "data/processed/survey-timestamp.rds")
