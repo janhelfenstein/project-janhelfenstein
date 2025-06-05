@@ -189,7 +189,7 @@ ggplot(data = survey_weekday,
 
 ------------------------------------------------------------------------
 
-The following histogram @fig_demography highlights the demography of the participants:
+The following histogram @fig-demography highlights the demography of the participants:
 
 ```{r}
 #| label: fig-demography
@@ -211,9 +211,29 @@ Most participants were between the ages of 20-40, since a lot of participants ca
 
 ### Statistical summary
 
-The following tables provide a statistical summary of the numerical values collected from the survey.
+The following tables and diagrams provide a statistical summary of the numerical values collected from the survey.
 
-The first table @tbl_statistics1 lists the average and median ages of the participants, grouped by gender. The average age is close to the median age, around 33 to 34. However, the standard deviation is quite large, so there are outliers: Some participants were much older than others. The maximum age was 63, as shown above in @fig_demography .
+In the first question of the survey, people were shown a picture of a plastic cup on forest ground. They were asked about their feeling when seeing trash in the forest, from 1 to 5 (1 = very upset, 5 = very happy.)
+
+@fig-age-gender-feeling shows that all participants reported a bad feeling (level 1 or 2) after seeing waste in the forest. There are no obvious trends from gender. But it is remarkable that no person above 40 reported a feeling level of 2. It could be concluded that the older the forest user, the more they are appaled by seeing waste in the forest. However, the small number of participants cannot justify this claim.
+
+```{r}
+#| label: fig-age-gender-feeling
+#| fig-cap: "Relation between age, gender and feeling when seeing waste in the forest"
+
+ggplot(data = survey_small, 
+       mapping = aes(x = age,
+                     y = waste_feeling,
+                     color = gender,
+                     shape = gender
+                    )
+       ) + 
+  geom_point(size = 3) +
+  labs(title = "Particpant's mood level when seeing waste in the forest",
+       x = "age in years", y = "feeling when seeing forest waste")
+```
+
+The first table @tbl-statistics1 lists the average and median ages of the participants, grouped by gender. The average age is close to the median age, around 33 to 34. However, the standard deviation is quite large, so there are outliers: Some participants were much older than others. The maximum age was 63, as shown above in @fig_demography .
 
 The table also provides info about how the participants rate the cleanliness of Zurichs forests on average, and the median. Since the standard deviation is low and the mean is close to the average, it can be concluded that most people rate the cleanliness between 3.5 and 4 and there are no significant outliers. However, the range (from 1 to 5) is quite small, so this has to be kept in mind.
 
@@ -222,9 +242,6 @@ The greatest agreement is in the participant's feeling when seeing waste in the 
 In conclusion: While participants deem that Zurichs forests are clean, any small amount of waste seen is perceived as very negative. So, according to participants, even small amounts of waste have to be avoided at all costs.
 
 ```{r}
-#|label: tbl-statistics1
-#|tbl-cap: -cap: "Statistical data of the survey, part 1"
-
 survey_statistics <- survey_small |> 
   select(gender, age, waste_feeling, waste_rating, activities_frequency, sports_value, measures_frequency)
 
@@ -244,15 +261,22 @@ survey_table_gender1 <- survey_statistics |>
         feeling_mean = mean(waste_feeling),
         feeling_sd = sd(waste_feeling),
         feeling_median = median(waste_feeling)
-    )
+    ) 
 
 write_csv(survey_table_gender1, here::here("data/final/tbl-statistics1.csv"))
+```
+
+```{r}
+#|label: tbl-statistics1
+#|tbl-cap: "Statistical data of the survey, part 1"
 
 survey_table_gender1 |> 
   gt() |> 
   fmt_number(decimals = 1) |> 
   tab_header(title = "statistical table of participants age, their forest-rating and their feeling when seeing forest waste",
              subtitle = "data from 27 forest users in June 2025, grouped by gender")
+
+
 ```
 
 The same conclusions can be made from the following graphic, which shows yet again how participants rate the cleanliness of Zurichs forests, charted by age and gender.
@@ -273,13 +297,13 @@ ggplot(data = survey_small,
 
 ```
 
-The next table @tbl-statitics2 shows more statistical insights. It shows that the numbers for weekly forest visits and the value of forest sports are close for both women and men. Men tend to visit the forest slightly more often than women, and rate the value of sports activities in the forest higher. But the difference between the two genders is small when compared to the standard deviations.
+The next table @tbl-statistics2 shows more statistical insights. It shows that the numbers for weekly forest visits and the value of forest sports are close for both women and men. Men tend to visit the forest slightly more often than women, and rate the value of sports activities in the forest higher. But the difference between the two genders is small when compared to the standard deviations.
 
 A bigger difference can be seen for the suggested number of removal-days per year. Women are generally in favor of more waste-removal-days per year than the men, as shown in the mean and median values. However, the male participants propose a larger range of removal days by authorities, with a minimum of 6 and a maximum of 180. Although, since there are many more men that participated in the survey, this bigger number of responses could be the cause for the wider numerical span, and doesn't necessarily have to be due to the gender.
 
 ```{r}
 #|label: tbl-statistics2
-#|tbl-cap: "Statistical data of the survey, part 2"
+#|tbl-cap: "statistical data of the survey, part 2"
 
 survey_table_gender2 <- survey_statistics |> 
     filter(!is.na(activities_frequency))  |>  # remove NA values
@@ -308,33 +332,11 @@ survey_table_gender2 |>
              subtitle = "data from 27 forest users in June 2025, grouped by gender")
 ```
 
-In the first question of the survey, people were shown a picture of a plastic cup on forest ground. They were asked about their feeling when seeing trash in the forest, from 1 to 5 (1 = very upset, 5 = very happy.)
-
-@fig-age-gender-feeling shows that all participants reported a bad feeling (level 1 or 2) after seeing waste in the forest. There are no obvious trends from gender. But it is remarkable that no person above 40 reported a feeling level of 2. It could be concluded that the older the forest user, the more they are appaled by seeing waste in the forest. However, the small number of participants cannot justify this claim.
-
-```{r}
-
-#| label: fig-age-gender-feeling
-#| fig-cap: "Relation between age, gender and feeling when seeing waste in the forest"
-
-ggplot(data = survey_small, 
-       mapping = aes(x = age,
-                     y = waste_feeling,
-                     color = gender,
-                     shape = gender
-                    )
-       ) + 
-  geom_point(size = 3) +
-  labs(title = "Particpant's mood level when seeing waste in the forest",
-       x = "age in years", y = "feeling when seeing forest waste") +
-  ylim(1, NA)
-```
-
-y = days per year
+The distribution of suggested removal days is also shown in the following diagram @fig-age-gender-removalfrequency . It seems that most people desire regular waste-removal by authorities every week, indicated by the large amount of data points around the number 52. But some are also satisfied with a monthly waste-removal schedule, which corresponds to 12 removal days per year.
 
 ```{r}
 #| label: fig-age-gender-removalfrequency
-#| fig-cap: "Relation between age, gender and desired waste-removal frequency"
+#| fig-cap: "number of days per year where authorities remove forest waste"
 ggplot(data = survey_small, 
        mapping = aes(x = age,
                      y = measures_frequency,
@@ -343,12 +345,11 @@ ggplot(data = survey_small,
                     )
        ) + 
   geom_point(size = 3) +
-  labs(x = "age in years", y = "perceived forest cleanliness") +
-  xlim(NA, 60) +
-  ylim(1, NA)
+  labs(title = "number of days per year where authorities remove forest waste",
+       x = "age in years", y = "suggested days of waste-removal")
 ```
 
-The next bar plot @fig-recycling shows the relation between the participants' forest-visiting frequency and their rating of the forest's cleanliness. Generally, people who visit the forest more often tend to give a higher rating.
+The next bar plot @fig-visits shows the relation between the participants' forest-visiting frequency and their rating of the forest's cleanliness. Generally, people who visit the forest more often tend to give a higher rating.
 
 ```{r}
 #| label: fig-visits
@@ -365,131 +366,3 @@ ggplot(data = survey_small,
 ```
 
 want: a plot that shows perceived cleanliness average per day
-
-or do this in a table
-
-`{r} #| label: male-female-subsets survey_male <- survey_small |>    filter(gender == "male")  survey_female <- survey_small |>    filter(gender == "female")}`
-
-The following pie chart visualizes the recycling frequency:
-
-```{r}
-# summarize the data
-# count the occurences of frequency category, calculate percentages
-survey_pie_freq <- survey_vis |> 
-  group_by(recycling_frequency) |> 
-  summarize(n = n(),
-            fraction = n()/nrow(survey_vis))
-
-# create pie chart
-# had help by perplexity.ai, link:
-# https://www.perplexity.ai/search/how-to-create-a-pie-chart-with-f0XcFVCEQYOZ7Mmn3crgeA
-pie(survey_pie_freq$fraction, labels = survey_pie_freq$recycling_frequency, main = "How often do ETH students recycle their waste? n = 7")
-
-
-```
-
-The following two pie chart visualizes how many people have a walkable station nearby, and how many people walk to a recycling station to recycle their waste.
-
-```{r}
-survey_pie_walkable <- survey_vis |> 
-  group_by(walkable_station) |> 
-  summarize(n = n(),
-            fraction = n()/nrow(survey_vis))
-
-pie(survey_pie_walkable$fraction, labels = survey_pie_walkable$walkable_station, main = "Do ETH students have a recycling station in walkable distance? n = 7")
-```
-
-```{r}
-# create dataframe only with people with station in walkable distancee
-survey_walkable <- survey_vis |> 
-  filter(walkable_station == "TRUE")
-
-# create summary of this df for pie chart
-survey_pie_walker <- survey_walkable |> 
-  group_by(regular_walker) |> 
-  summarize(n = n(),
-            fraction = n()/nrow(survey_walkable)
-            )
-
-# create pie chart
-pie(survey_pie_walker$fraction, labels = survey_pie_walker$regular_walker, main = "How many of these ETH students walk to the nearby station? n = 5")
-```
-
-It is satisfying to see that all 5 students who have a walkable station nearby will walk there to recycle their waste.
-
-How many of these selected people are regular recyclers?
-
-```{r}
-survey_pie_freq2 <- survey_walkable |> 
-  filter(regular_walker == "TRUE") |> 
-  group_by(recycling_frequency) |> 
-  summarize(n = n(),
-            fraction = n()/nrow(survey_walkable)
-            )
-  
-# create pie chart
-pie(survey_pie_freq2$fraction, labels = survey_pie_freq2$recycling_frequency, main = "How often do these regular walkers recycle their goods? n = 5")
-```
-
-## Table of the data with gt()
-
-The following table sumarizes the relation between recycling frequency and the rating that students give to ETH's recycling situation:
-
-```{r}
-
-survey_table_recycler <- survey |> 
-  group_by(recycler_cat) |> 
-  summarise(count = n(),
-            mean = mean(rating),
-            sd = sd(rating),
-            min = min(rating),
-            max = max(rating)
-           )
-
-# create quick table with gt
-survey_table_recycler |> 
-  gt() |> 
-  tab_header(title = "Rating of recycling at ETH by students, grouped by recycling frequency",
-             subtitle = "Data from 7 students in 2025") |> 
-  cols_label(recycler_cat = "recycling_frequency",
-             mean = "mean_rating")
-
-```
-
-## Table of the data with kable()
-
-In @tbl-survey-recycler , the same numbers are displayed, showing the recycling frequency and how it corresponds to ETH's recycling rating. But this time, the table was generated with the kable() function.
-
-```{r}
-#| label: tbl-survey-recycler
-#| tbl-cap: "Rating of recycling at ETH by students, grouped by recycling frequency. Data from 6 students."
-survey_table_recycler |> 
-  rename(`recycling_frequency` = recycler_cat,
-         `mean_rating` = mean) |> 
-  kable()
-```
-
-@tbl-survey-recycler shows that people who always recycle their waste are rating the recycling situation at ETH higher than others. People who recycle less often tend to rate the recycling situation lower, at two or three stars.
-
-This is also visualized in @fig-recycling\
-
-## Saving the dataframes used for visualization
-
-saving it in data/final folder\
-
-```{r}
-# dataframe for point plot
-write_csv(survey_vis, here::here("data/final/survey_vis.csv"))
-
-# dataframe for pie chart
-write_csv(survey_pie_freq, here::here("data/final/survey_pie_freq.csv"))
-write_csv(survey_pie_walkable, here::here("data/final/survey_pie_walkable.csv"))
-write_csv(survey_pie_walker, here::here("data/final/survey_pie_walker.csv"))
-write_csv(survey_pie_freq2, here::here("data/final/survey_pie_freq2.csv"))
-
-# dataframe for table
-write_csv(survey_table_recycler, here::here("data/final/survey_table_recycler.csv"))
-
-```
-
-\
