@@ -256,3 +256,7 @@ write_csv(survey1_ordered, "data/processed/survey1-data-processed.csv")
 write_csv(survey2_ordered, "data/processed/survey2-data-processed.csv")
 write_rds(survey1_ordered, "data/processed/survey1-data-processed.rds")
 write_rds(survey2_ordered, "data/processed/survey2-data-processed.rds")
+
+# save survey_renamed for the sake of timestamp data
+write_csv(survey_renamed, "data/processed/survey-renamed.csv")
+write_rds(survey_renamed, "data/processed/survey-renamed.rds")
