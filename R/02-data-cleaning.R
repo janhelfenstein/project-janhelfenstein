@@ -258,11 +258,11 @@ survey1_short <- survey1_short |>
 
 # step 9: write csv and rds in the processed directory
 # write csv and rds in processed
-write_csv(survey1_short, "data/processed/survey1-data-processed.csv")
-write_csv(survey2_short, "data/processed/survey2-data-processed.csv")
-write_rds(survey1_short, "data/processed/survey1-data-processed.rds")
-write_rds(survey2_short, "data/processed/survey2-data-processed.rds")
+write_csv(survey1_short, "data/processed/survey1-processed.csv")
+write_csv(survey2_short, "data/processed/survey2-processed.csv")
+write_rds(survey1_short, "data/processed/survey1-processed.rds")
+write_rds(survey2_short, "data/processed/survey2-processed.rds")
 
 # save survey_ordered for the sake of having 1 row per participant
-write_csv(survey_ordered, "data/processed/survey-small.csv")
-write_rds(survey_ordered, "data/processed/survey-small.rds")
+write_csv(survey_ordered, "data/processed/survey-small-processed.csv")
+write_rds(survey_ordered, "data/processed/survey-small-processed.rds")

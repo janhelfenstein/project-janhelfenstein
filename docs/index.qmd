@@ -29,7 +29,7 @@ For measures against waste, participants prefer actions that are tied to persona
 For this project, 11 people in the forest were approached on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day.
 
 |                                      |                                       |
-|--------------------------------------|---------------------------------------|
+|------------------------------------|------------------------------------|
 | ![](images/clipboard-2887181069.png) | ![](images/clipboard-3782636616.jpeg) |
 
 The survey consists of 19 questions, separated into 5 sections:
@@ -57,7 +57,7 @@ The answers of the 2 German-speaking participants were manually entered into the
 On Monday, 2nd of June 2025, the survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex. More flyers were also hung up at different picnic-area spots in the Hoenggerberg and Kaeferberg forests.
 
 |                                       |                                      |                                       |
-|---------------------------------------|--------------------------------------|---------------------------------------|
+|------------------------|------------------------|------------------------|
 | ![](images/clipboard-3097511101.jpeg) | ![](images/clipboard-132594642.jpeg) | ![](images/clipboard-3518673957.jpeg) |
 
 ![](images/clipboard-970658310.png)
@@ -121,13 +121,14 @@ survey_vis2 <- survey_small |>
   mutate(amount = n())
 
 ggplot(data = survey_vis2, 
-       mapping = aes(x = weekday
+       mapping = aes(x = weekday,
+                     fill = gender
                      #y = waste_rating
                     )
        ) + 
   geom_bar() +
   #geom_point(shape = 2, size = 3) + 
-  labs(x = "survey weekday", y = "perceived forest cleanliness")
+  labs(x = "weekday the survey was taken", y = "number of answers")
 ```
 
 ------------------------------------------------------------------------

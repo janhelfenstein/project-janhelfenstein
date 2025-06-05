@@ -13,4 +13,3 @@ survey_raw <- read_sheet("https://docs.google.com/spreadsheets/d/1IRUdMmEAWMbT-o
 
 # store data
 write_csv(survey_raw, "data/raw/survey-raw.csv")
-
