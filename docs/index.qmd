@@ -159,13 +159,15 @@ survey_weekday |>
 write_csv(survey_weekday, here::here("data/final/tbl-weekday-gender.csv"))
 ```
 
+All participants were either male or female. The survey also presented the options to chose "non-binary" or "prefer not to answer" for the gender, but these options were never selected.
+
 The second figure @fig-weekday also displays the number of answers per day, while also showing a more visible distinction between male and female responses. 12 people were met in-person in the forest on Sunday evening, of which most were male. One additional person answered the survey online later. From Monday to Thursday, responses came only from people answering the questionnaire online. Most of these answers came in on Monday, when the link to the survey was posted in a WhatsApp group chat for students living in student housing on Campus Hoenggerberg, which is only 200 meters away from the Kaeferberg forest. Most of these participants were also male.
 
 ```{r}
 #| label: fig-weekday
 #| fig-cap: "number of answers per day"
 
-# same dataframe as in the code block above
+# same dataframe as in the code block above, so I don't use write_csv
 survey_weekday <- survey_small |> 
   group_by(weekday, gender) |> 
   summarize(amount = n())
@@ -193,7 +195,7 @@ The following histogram @fig_demography highlights the demography of the partici
 #| label: fig-demography
 #| fig-cap: "age of participants in years"
 survey_demography <- survey_small
-
+write_csv(survey_demography, here::here("data/final/fig-demography.csv"))
 
 ggplot(data = survey_demography,
        mapping = aes(x = age, fill = gender)) +
@@ -207,22 +209,113 @@ ggplot(data = survey_demography,
 
 Most participants were between the ages of 20-40, since a lot of participants came from the student housing apartments near the forest entrance.
 
-### Numerical summary
+### Statistical summary
 
-The following table provides a statistical summary of the numerical values collected from the survey:
+The following tables provide a statistical summary of the numerical values collected from the survey.
+
+The first table @tbl_statistics1 lists the average and median ages of the participants, grouped by gender. The average age is close to the median age, around 33 to 34. However, the standard deviation is quite large, so there are outliers: Some participants were much older than others. The maximum age was 63, as shown above in @fig_demography .
+
+The table also provides info about how the participants rate the cleanliness of Zurichs forests on average, and the median. Since the standard deviation is low and the mean is close to the average, it can be concluded that most people rate the cleanliness between 3.5 and 4 and there are no significant outliers. However, the range (from 1 to 5) is quite small, so this has to be kept in mind.
+
+The greatest agreement is in the participant's feeling when seeing waste in the forest: All participants report a bad feeling (1 or 2) when seeing forest waste. The average and the median are close to 1, and the standard deviation is low.
+
+In conclusion: While participants deem that Zurichs forests are clean, any small amount of waste seen is perceived as very negative. So, according to participants, even small amounts of waste have to be avoided at all costs.
 
 ```{r}
-#|label
+#|label: tbl-statistics1
+#|tbl-cap: -cap: "Statistical data of the survey, part 1"
+
+survey_statistics <- survey_small |> 
+  select(gender, age, waste_feeling, waste_rating, activities_frequency, sports_value, measures_frequency)
+
+write_csv(survey_statistics, here::here("data/final/survey_statistics.csv"))
+
+survey_table_gender1 <- survey_statistics |> 
+    select(gender, age, waste_rating, waste_feeling) |> 
+    group_by(gender) |>                 # grouped by gender
+    summarise(
+        count = n(),
+        age_mean = mean(age),
+        age_sd = sd(age),
+        age_median = median(age),
+        rating_mean = mean(waste_rating),
+        rating_sd = sd(waste_rating),
+        rating_median = median(waste_rating),
+        feeling_mean = mean(waste_feeling),
+        feeling_sd = sd(waste_feeling),
+        feeling_median = median(waste_feeling)
+    )
+
+write_csv(survey_table_gender1, here::here("data/final/tbl-statistics1.csv"))
+
+survey_table_gender1 |> 
+  gt() |> 
+  fmt_number(decimals = 1) |> 
+  tab_header(title = "statistical table of participants age, their forest-rating and their feeling when seeing forest waste",
+             subtitle = "data from 27 forest users in June 2025, grouped by gender")
+```
+
+The same conclusions can be made from the following graphic, which shows yet again how participants rate the cleanliness of Zurichs forests, charted by age and gender.
+
+```{r}
+#| label: fig-age-gender-rating
+#| fig-cap: "Relation between age, gender and perceived forest cleanliness"
+ggplot(data = survey_small,
+       mapping = aes(x = age,
+                     y = waste_rating,
+                     color = gender,
+                     shape = gender)        
+       ) +    
+  geom_point(size = 3) +
+  labs(x = "age in years", 
+       y = "perceived forest cleanliness") + 
+  ylim(1, NA)
+
+```
+
+The next table @tbl-statitics2 shows more statistical insights. It shows that the numbers for weekly forest visits and the value of forest sports are close for both women and men. Men tend to visit the forest slightly more often than women, and rate the value of sports activities in the forest higher. But the difference between the two genders is small when compared to the standard deviations.
+
+A bigger difference can be seen for the suggested number of removal-days per year. Women are generally in favor of more waste-removal-days per year than the men, as shown in the mean and median values. However, the male participants propose a larger range of removal days by authorities, with a minimum of 6 and a maximum of 180. Although, since there are many more men that participated in the survey, this bigger number of responses could be the cause for the wider numerical span, and doesn't necessarily have to be due to the gender.
+
+```{r}
+#|label: tbl-statistics2
+#|tbl-cap: "Statistical data of the survey, part 2"
+
+survey_table_gender2 <- survey_statistics |> 
+    filter(!is.na(activities_frequency))  |>  # remove NA values
+    select(gender, activities_frequency, sports_value, measures_frequency) |> 
+    group_by(gender) |>                 # grouped by gender
+    summarise(
+        count = n(),
+        visits_mean = mean(activities_frequency),
+        visits_sd = sd(activities_frequency),
+        visits_median = median(activities_frequency),
+        sports_value_mean = mean(sports_value),
+        sports_value_sd = sd(sports_value),
+        sports_value_median = median(sports_value),
+        removal_days_mean = mean(measures_frequency),
+        removal_days_median = median(measures_frequency),
+        removal_days_min = min(measures_frequency),
+        removal_days_max = max(measures_frequency)
+    )
+
+write_csv(survey_table_gender2, here::here("data/final/tbl-statistics2.csv"))
+
+survey_table_gender2 |> 
+  gt() |> 
+  fmt_number(decimals = 1) |> 
+  tab_header(title = "statistical table of participants visiting frequency, their value of forest sports, and their suggested waste-removal days per year",
+             subtitle = "data from 27 forest users in June 2025, grouped by gender")
 ```
 
 In the first question of the survey, people were shown a picture of a plastic cup on forest ground. They were asked about their feeling when seeing trash in the forest, from 1 to 5 (1 = very upset, 5 = very happy.)
 
-@fig-age-gender-feeling shows that all participants reported a bad feeling (level 1 or 2) after seeing waste in the forest. There are no obvious trends from gender. But it is remarkable that only
+@fig-age-gender-feeling shows that all participants reported a bad feeling (level 1 or 2) after seeing waste in the forest. There are no obvious trends from gender. But it is remarkable that no person above 40 reported a feeling level of 2. It could be concluded that the older the forest user, the more they are appaled by seeing waste in the forest. However, the small number of participants cannot justify this claim.
 
 ```{r}
 
 #| label: fig-age-gender-feeling
-#| fig-cap: "Relation between age, gender and feeling about seeing waste in the forest"
+#| fig-cap: "Relation between age, gender and feeling when seeing waste in the forest"
 
 ggplot(data = survey_small, 
        mapping = aes(x = age,
@@ -232,28 +325,10 @@ ggplot(data = survey_small,
                     )
        ) + 
   geom_point(size = 3) +
-  labs(x = "age in years", y = "perceived forest cleanliness") +
+  labs(title = "Particpant's mood level when seeing waste in the forest",
+       x = "age in years", y = "feeling when seeing forest waste") +
   ylim(1, NA)
 ```
-
-```{r}
-#| label: fig-age-gender-rating
-#| fig-cap: "Relation between age, gender and perceived forest cleanliness"
-
-ggplot(data = survey_small, 
-       mapping = aes(x = age,
-                     y = waste_rating,
-                     color = gender,
-                     shape = gender
-                    )
-       ) + 
-  geom_point(size = 3) +
-  labs(x = "age in years", y = "perceived forest cleanliness") +
-  xlim(NA, 60)
-  ylim(1, NA)
-```
-
-x = age
 
 y = days per year
 
