@@ -29,8 +29,20 @@ For measures against waste, participants prefer actions that are tied to persona
 For this project, a total of 27 participants were asked about their assessment of waste in forests around ETH Hoenggerberg. 12 people were approached in the forest on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day. The following screenshot displays the briefing that the participants received before starting the survey. The photo on the right shows me in the process of looking for participants in the forest.
 
 |                                      |                                       |
-|--------------------------------------|---------------------------------------|
+|------------------------------------|------------------------------------|
 | ![](images/clipboard-2887181069.png) | ![](images/clipboard-1730554855.jpeg) |
+
+#### site plan
+
+The following satellite view show the site of the survey: The survey was conducted in the two forests "Hoenggerberg forest" and Kaeferberg forest in the north of Zurich.
+
+![](images/clipboard-2053130996.png)
+
+The survey was conducted near the Campus of ETH Hoenggerberg. The student housing on the campus is marked with a red square and is situated close to the Hoenggerberg forest. In fact, many participants of this survey are living in these apartment blocks.
+
+The QR-codes indicate where flyers with a link to the online survey were hung up. The list icon with a green frame indicates the two positions near the forest entrances where participants were asked to take the survey in person.
+
+![](images/clipboard-3982959961.png)
 
 The survey consists of 19 questions, separated into 5 sections:
 
@@ -66,7 +78,7 @@ The answers of the 2 German-speaking participants were manually entered into the
 On Monday, 2nd of June 2025, the English survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex. More flyers were also hung up at different picnic-area spots in the Hoenggerberg and Kaeferberg forests.
 
 |                                       |                                      |                                       |
-|---------------------------------------|--------------------------------------|---------------------------------------|
+|------------------------|------------------------|------------------------|
 | ![](images/clipboard-3097511101.jpeg) | ![](images/clipboard-132594642.jpeg) | ![](images/clipboard-3518673957.jpeg) |
 
 ![](images/clipboard-970658310.png)
@@ -187,9 +199,20 @@ ggplot(data = survey_demography,
        mapping = aes(x = age, fill = gender)) +
   geom_histogram(color = "black") +
   labs(title = "age of participants in years", 
+       subtitle = "27 participants total",
        x = "age in years", 
        y = "count") +
   theme_minimal()
+```
+
+Most participants were between the ages of 20-40, since a lot of participants came from the student housing apartments near the forest entrance.
+
+### Numerical summary
+
+The following table provides a statistical summary of the numerical values collected from the survey:
+
+```{r}
+#|label
 ```
 
 In the first question of the survey, people were shown a picture of a plastic cup on forest ground. They were asked about their feeling when seeing trash in the forest, from 1 to 5 (1 = very upset, 5 = very happy.)
