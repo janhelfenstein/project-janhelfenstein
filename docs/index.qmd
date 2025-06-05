@@ -26,15 +26,15 @@ For measures against waste, participants prefer actions that are tied to persona
 
 ### Data gathering
 
-For this project, 12 people in the forest were approached on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day. The following screenshot displays the briefing that the participants received before starting the survey. The photo on the right shows me in the process of looking for participants in the forest.
+For this project, a total of 27 participants were asked about their assessment of waste in forests around ETH Hoenggerberg. 12 people were approached in the forest on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day. The following screenshot displays the briefing that the participants received before starting the survey. The photo on the right shows me in the process of looking for participants in the forest.
 
 |                                      |                                       |
-|------------------------------------|------------------------------------|
+|--------------------------------------|---------------------------------------|
 | ![](images/clipboard-2887181069.png) | ![](images/clipboard-1730554855.jpeg) |
 
 The survey consists of 19 questions, separated into 5 sections:
 
-1.  Waste in the forest \
+1.  Waste in the forest\
     (6 questions, 2 optional)
 
 2.  Forest activities\
@@ -66,7 +66,7 @@ The answers of the 2 German-speaking participants were manually entered into the
 On Monday, 2nd of June 2025, the English survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex. More flyers were also hung up at different picnic-area spots in the Hoenggerberg and Kaeferberg forests.
 
 |                                       |                                      |                                       |
-|------------------------|------------------------|------------------------|
+|---------------------------------------|--------------------------------------|---------------------------------------|
 | ![](images/clipboard-3097511101.jpeg) | ![](images/clipboard-132594642.jpeg) | ![](images/clipboard-3518673957.jpeg) |
 
 ![](images/clipboard-970658310.png)
@@ -93,6 +93,8 @@ library(knitr)
 ```
 
 ## Data import
+
+The processed data is imported from the data/processed directory which was created with the second R-script.
 
 ```{r}
 #| label: data-import
@@ -129,7 +131,7 @@ ggplot(data = survey_small,
 # https://stackoverflow.com/a/51775750
 ```
 
-The figure is a bit hard to read, because most people filled the survey at around the same time. To make it more clear, the following table presents the summarized data in a more understandable form:
+The figure is a bit hard to read, because most people filled the survey at around the same time. To make it more clear, the following table @tbl-weekday-gender presents the summarized data in a more understandable form:
 
 ```{r}
 #| label: tbl-weekday-gender
@@ -149,7 +151,7 @@ The second figure @fig-weekday also displays the number of answers per day, whil
 
 ```{r}
 #| label: fig-weekday
-#| fig-cap: "Number of answers per day"
+#| fig-cap: "number of answers per day"
 
 # same dataframe as in the code block above
 survey_weekday <- survey_small |> 
@@ -166,13 +168,29 @@ ggplot(data = survey_weekday,
   geom_text(aes(label = amount), 
             position = position_stack(vjust = 0.5), 
             color = "white") +
-  labs(x = "weekday the survey was taken",
+  labs(title = "Number of answers per day",
+       x = "weekday the survey was taken",
        y = "number of answers")
 ```
 
 ------------------------------------------------------------------------
 
-The following table highlights the demography of the
+The following histogram @fig_demography highlights the demography of the participants:
+
+```{r}
+#| label: fig-demography
+#| fig-cap: "age of participants in years"
+survey_demography <- survey_small
+
+
+ggplot(data = survey_demography,
+       mapping = aes(x = age, fill = gender)) +
+  geom_histogram(color = "black") +
+  labs(title = "age of participants in years", 
+       x = "age in years", 
+       y = "count") +
+  theme_minimal()
+```
 
 In the first question of the survey, people were shown a picture of a plastic cup on forest ground. They were asked about their feeling when seeing trash in the forest, from 1 to 5 (1 = very upset, 5 = very happy.)
 
@@ -238,7 +256,7 @@ The next bar plot @fig-recycling shows the relation between the participants' fo
 #| label: fig-visits
 #| fig-cap: "Rating of cleanliness in Zurich's forest by groups with different visiting frequencies"
 
-ggplot(data = survey_vis, 
+ggplot(data = survey_small, 
        mapping = aes(x = waste_rating,
                      fill = activities_frequency
                     )
@@ -252,8 +270,7 @@ want: a plot that shows perceived cleanliness average per day
 
 or do this in a table
 
-```{r} #| label: male-female-subsets survey_male <- survey_small |>    filter(gender == "male")  survey_female <- survey_small |>    filter(gender == "female")}
-```
+`{r} #| label: male-female-subsets survey_male <- survey_small |>    filter(gender == "male")  survey_female <- survey_small |>    filter(gender == "female")}`
 
 The following pie chart visualizes the recycling frequency:
 
