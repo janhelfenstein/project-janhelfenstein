@@ -28,9 +28,11 @@ For measures against waste, participants prefer actions that are tied to persona
 
 For this project, 11 people in the forest were approached on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day.
 
-![](images/clipboard-2887181069.png)
+|                                      |                                       |
+|--------------------------------------|---------------------------------------|
+| ![](images/clipboard-2887181069.png) | ![](images/clipboard-3782636616.jpeg) |
 
-The survey consists of 19 questions, separated into 5 sections
+The survey consists of 19 questions, separated into 5 sections:
 
 1.  Waste in the forest
 
@@ -48,15 +50,19 @@ A link to the survey can be found here:
 
 ### German survey
 
-A second survey was created in German, in order to reach more participants. However, this workflow was later deemed as too complicated. Hence, only two participants (an elderly couple) answered the german survey on the first day, and all following participants were shown the English survey instead.
+A second survey was created in German, in order to reach more participants. However, the workflow to entertain two surveys simultaneously was later deemed as too complicated. Hence, only two participants (an elderly couple) answered the German survey on the first day, and all following participants were shown the English survey instead.
 
-The answers of the 2 German-speaking participants manually entered into the english survey on Thursday, 6th of June, by the study author.
+The answers of the 2 German-speaking participants were manually entered into the English survey on Thursday, 6th of June, by the study author.
 
-On Monday, 2nd of June 2025, the survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex.
+On Monday, 2nd of June 2025, the survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex. More flyers were also hung up at different picnic-area spots in the Hoenggerberg and Kaeferberg forests.
+
+|                                       |                                      |                                       |
+|---------------------------------------|--------------------------------------|---------------------------------------|
+| ![](images/clipboard-3097511101.jpeg) | ![](images/clipboard-132594642.jpeg) | ![](images/clipboard-3518673957.jpeg) |
 
 ![](images/clipboard-970658310.png)
 
-To ensure validity, participants who filled out the survey in this manner were reminded again to only fill out the survey if they were in the forest on that day. But it since they were not met in the forest, like the first batch of participants, it can't be verified if they were actually in the forest on that day.
+To ensure validity, participants who filled out the survey in this manner were reminded again to only fill out the survey if they were in the forest on that day. But it since they were not met in the forest in person, like the first batch of participants, it can't be verified if they actually spent time in the forest on the day they filled out the survey.
 
 ### Data processing
 
@@ -147,7 +153,7 @@ x = age
 y = cleanliness
 
 ```{r}
-#| label: age-cleanliness
+#| label: age-gender-rating
 #| fig-cap: "Relation between age, gender and perceived forest cleanliness"
 
 ggplot(data = survey_small, 
@@ -159,12 +165,29 @@ ggplot(data = survey_small,
        ) + 
   geom_point(size = 3) +
   labs(x = "age in years", y = "perceived forest cleanliness") +
+  xlim(NA, 60)
   ylim(1, NA)
 ```
 
 x = age
 
 y = days per year
+
+```{r}
+#| label: age-gender-removalfrequency
+#| fig-cap: "Relation between age, gender and desired waste-removal frequency"
+ggplot(data = survey_small, 
+       mapping = aes(x = age,
+                     y = measures_frequency,
+                     color = gender,
+                     shape = gender
+                    )
+       ) + 
+  geom_point(size = 3) +
+  labs(x = "age in years", y = "perceived forest cleanliness") +
+  xlim(NA, 60) +
+  ylim(1, NA)
+```
 
 The next bar plot @fig-recycling shows the relation between the participants' forest-visiting frequency and their rating of the forest's cleanliness. Generally, people who visit the forest more often tend to give a higher rating.
 
