@@ -115,7 +115,7 @@ survey2 <- read_rds(here::here("data/processed/survey2-processed.rds"))
 survey_small <- read_rds(here::here("data/processed/survey-small-processed.rds"))
 ```
 
-## Data visualization
+## Results - Data visualization
 
 In this section, visualization tools learned in the RBTL course are utilized to create different tables and diagrams to highlight certain trends in the data.
 
