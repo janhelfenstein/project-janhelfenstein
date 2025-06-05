@@ -29,7 +29,7 @@ For measures against waste, participants prefer actions that are tied to persona
 For this project, a total of 27 participants were asked about their assessment of waste in forests around ETH Hoenggerberg. 12 people were approached in the forest on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day. The following screenshot displays the briefing that the participants received before starting the survey. The photo on the right shows me in the process of looking for participants in the forest.
 
 |                                      |                                       |
-|--------------------------------------|---------------------------------------|
+|------------------------------------|------------------------------------|
 | ![](images/clipboard-2887181069.png) | ![](images/clipboard-1730554855.jpeg) |
 
 #### Site plan
@@ -78,7 +78,7 @@ The answers of the 2 German-speaking participants were manually entered into the
 On Monday, 2nd of June 2025, the English survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex. More flyers were also hung up at different picnic-area spots in the Hoenggerberg and Kaeferberg forests.
 
 |                                       |                                      |                                       |
-|---------------------------------------|--------------------------------------|---------------------------------------|
+|------------------------|------------------------|------------------------|
 | ![](images/clipboard-3097511101.jpeg) | ![](images/clipboard-132594642.jpeg) | ![](images/clipboard-3518673957.jpeg) |
 
 ![](images/clipboard-970658310.png)
@@ -137,7 +137,8 @@ ggplot(data = survey_small,
                     )
        ) + 
   geom_point(size = 3) + 
-  labs(x = "survey timestamp", y = "perceived forest cleanliness") +
+  labs(title = "Survey timeline and perceived cleanliness of the forest",
+       x = "survey timestamp", y = "perceived forest cleanliness") +
   scale_shape(solid = FALSE) +
   ylim(1, NA)
 
@@ -195,14 +196,14 @@ The following histogram @fig-demography highlights the demography of the partici
 
 ```{r}
 #| label: fig-demography
-#| fig-cap: "age of participants in years"
+#| fig-cap: "Age of participants in years"
 survey_demography <- survey_small
 write_csv(survey_demography, here::here("data/final/fig-demography.csv"))
 
 ggplot(data = survey_demography,
        mapping = aes(x = age, fill = gender)) +
   geom_histogram(color = "black") +
-  labs(title = "age of participants in years", 
+  labs(title = "Age of participants in years", 
        subtitle = "27 participants total",
        x = "age in years", 
        y = "count") +
@@ -280,7 +281,7 @@ The greatest agreement is in the participant's feeling when seeing waste in the 
 
 In conclusion: While participants deem that Zurichs forests are clean, any small amount of waste seen is perceived as very negative. So, according to participants, even small amounts of waste have to be avoided at all costs.
 
-The same conclusions can be made from the following graphic, which shows yet again how participants rate the cleanliness of Zurichs forests, charted by age and gender.
+The same conclusions can be made from the following graphic @fig-age-gender-rating , which shows yet again how participants rate the cleanliness of Zurichs forests, charted by age and gender.
 
 ```{r}
 #| label: fig-age-gender-rating
@@ -292,7 +293,8 @@ ggplot(data = survey_small,
                      shape = gender)        
        ) +    
   geom_point(size = 3) +
-  labs(x = "age in years", 
+  labs(title = "Relation between age, gender and perceived forest cleanliness",
+       x = "age in years", 
        y = "perceived forest cleanliness") + 
   ylim(1, NA)
 
@@ -453,3 +455,7 @@ As a result of this survey, it was found that most people think that litter in t
 When it comes to removing waste, participants favored solutions that emphasize individual responsibility. They supported that people clean up their own litter, and further suggested adding more waste bins throughout the forest. Fines weree seen as a good measure to enforce this accountability. The second most preferred option were cleaning activities carried out by authorities or volunteers.
 
 The demographical data showed no significant trends towards gender. Older people tended to react more negatively towards waste, and gave the forests a lower cleanliness rating. But since the sample size was small, the significance assessment should not be overexaggerated.
+
+# References
+
+No references, I forgot.
