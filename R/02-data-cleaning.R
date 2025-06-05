@@ -39,6 +39,14 @@ survey_renamed <- survey_raw |>
   rename(age = 19) |> 
   rename(gender = 20)
 
+# fix timestamp of manually added datapoints
+# data was imported from the german version of the google survey
+# more info on why this was done is written in the report
+# code to edit the dataframe was generated using ChatGPT:
+# https://chatgpt.com/share/6841b0b5-c2e4-8011-b70d-c15aacb89456
+survey_renamed <- survey_renamed |> 
+  mutate(timestamp = replace(timestamp, 26, "2025-06-01T15:25:27Z")) |> 
+  mutate(timestamp = replace(timestamp, 26, "2025-06-01T15:39:16Z"))
 
 # step 2: change dates and times, add weekday variable
 survey_renamed <- survey_renamed |> 

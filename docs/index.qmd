@@ -52,7 +52,7 @@ A link to the survey can be found here:
 
 A second survey was created in German, in order to reach more participants. However, the workflow to entertain two surveys simultaneously was later deemed as too complicated. Hence, only two participants (an elderly couple) answered the German survey on the first day, and all following participants were shown the English survey instead.
 
-The answers of the 2 German-speaking participants were manually entered into the English survey on Thursday, 6th of June, by the study author.
+The answers of the 2 German-speaking participants were manually entered into the English survey on Thursday, 6th of June, at 16:43 by the study author.
 
 On Monday, 2nd of June 2025, the survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex. More flyers were also hung up at different picnic-area spots in the Hoenggerberg and Kaeferberg forests.
 
@@ -85,30 +85,38 @@ library(knitr)
 
 ```{r}
 #| label: data-import
-survey1 <- read_rds(here::here("data/processed/survey1-data-processed.rds"))
-survey2 <- read_rds(here::here("data/processed/survey1-data-processed.rds"))
-survey_small <- read_rds(here::here("data/processed/survey-small.rds"))
+survey1 <- read_rds(here::here("data/processed/survey1-processed.rds"))
+survey2 <- read_rds(here::here("data/processed/survey2-processed.rds"))
+survey_small <- read_rds(here::here("data/processed/survey-small-processed.rds"))
 ```
 
 ## Data visualization
 
-The following point plot @fig-rating displays when survey was taken and how the users rated the waste situation in the forest around Hoenggerberg. The rating range was from 1 to 5, with 5 being the best (highest cleanliness). It is likely that the given rating reflected the tidyness at in the forest at that time.
+The following point plot @fig-timeline displays when survey was taken and how the users rated the waste situation in the forest around Hoenggerberg. The rating range was from 1 to 5, with 5 being the best (highest cleanliness). It is likely that the given rating reflected the tidyness at in the forest at that time.
+
+Note: The last two datapoints (one male and one female participant on June 5th, on the veryright of the diagram) were manually entered by the study author to include the
 
 ```{r}
-#| label: fig-rating
+#| label: fig-timeline
 #| fig-cap: "Survey timeline and perceived cleanliness of the forest"
-survey_vis <- survey_small |> 
+survey_timestamp <- survey_small |> 
   group_by(weekday) |> 
   mutate(amount = n())
 
-ggplot(data = survey_vis, 
+ggplot(data = survey_small, 
        mapping = aes(x = timestamp,
-                     y = waste_rating
+                     y = waste_rating,
+                     color = gender,
+                     shape = gender
                     )
        ) + 
-  geom_point(shape = 2, size = 3) + 
-  labs(x = "survey timestamp", y = "perceived forest cleanliness")
+  geom_point(size = 3) + 
+  labs(x = "survey timestamp", y = "perceived forest cleanliness") +
+  scale_shape(solid = FALSE) +
+  ylim(1, NA)
 
+# the tip to include scale_shape(solid = FALSE) came from stackoverflow,
+# https://stackoverflow.com/a/51775750
 ```
 
 second figure: number of answers per day
@@ -123,7 +131,6 @@ survey_vis2 <- survey_small |>
 ggplot(data = survey_vis2, 
        mapping = aes(x = weekday,
                      fill = gender
-                     #y = waste_rating
                     )
        ) + 
   geom_bar() +
@@ -133,7 +140,7 @@ ggplot(data = survey_vis2,
 
 ------------------------------------------------------------------------
 
-want: a plot tthat sows perceived cleanliness average per day
+want: a plot that shows perceived cleanliness average per day
 
 or do this in a table
 
