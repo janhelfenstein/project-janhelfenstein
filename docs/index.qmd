@@ -92,9 +92,11 @@ survey_small <- read_rds(here::here("data/processed/survey-small-processed.rds")
 
 ## Data visualization
 
-The following point plot @fig-timeline displays when survey was taken and how the users rated the waste situation in the forest around Hoenggerberg. The rating range was from 1 to 5, with 5 being the best (highest cleanliness). It is likely that the given rating reflected the tidyness at in the forest at that time.
+In this section, visualization tools learned in the RBTL course are utilized to create different tables and diagrams to highlight certain trends in the data.
 
-Note: The last two datapoints (one male and one female participant on June 5th, on the veryright of the diagram) were manually entered by the study author to include the
+### Demography and timeline
+
+The following point plot @fig-timeline displays when survey was taken and how the users rated the waste situation in the forest around Hoenggerberg. The rating range was from 1 to 5, with 5 being the best (highest cleanliness). It is likely that the given rating reflected the tidyness at in the forest at that time. Most people rated the cleanliness of the Hoenggerberg and Kaeferberg forest between 3 and 4, so there is room for improvement. But the lowest rating of 1 was not given a single time. No trends are visible regarding the gender of the participants.
 
 ```{r}
 #| label: fig-timeline
@@ -119,11 +121,25 @@ ggplot(data = survey_small,
 # https://stackoverflow.com/a/51775750
 ```
 
-second figure: number of answers per day
+The second figure @fig-weekday displays the number of answers per day, while also showing a more visible distinction between male and female responses. 11 people were met in-person in the forest on Sunday evening, of which most were male. From Monday to Thursday, responses came from people answering the questionnaire online. Most answers came in on Monday, when the link to the survey was posted in a WhatsApp group chat for students living in student housing on Campus Hoenggerberg, which is only 200 meters away from the Kaeferberg forest. Most of these participants were also male.
 
 ```{r}
-#| label: fig-rating2
+#| label: fig-weekday
 #| fig-cap: "Number of answers per day"
+
+survey_demography <- survey_small |> 
+  group_by(weekday, gender) |> 
+  summarise(amount = n())
+
+# Plot using geom_col and add text labels
+ggplot(data = survey_demography, 
+       aes(x = weekday, y = amount, fill = gender)) + 
+  geom_col(position = "stack") +
+  geom_text(aes(label = amount), 
+            position = position_stack(vjust = 0.5), 
+            color = "white")
+
+
 survey_vis2 <- survey_small |> 
   group_by(weekday) |> 
   mutate(amount = n())
@@ -134,34 +150,35 @@ ggplot(data = survey_vis2,
                     )
        ) + 
   geom_bar() +
-  #geom_point(shape = 2, size = 3) + 
+  geom_text(amount) +
   labs(x = "weekday the survey was taken", y = "number of answers")
 ```
 
 ------------------------------------------------------------------------
 
-want: a plot that shows perceived cleanliness average per day
+In the first question of the survey, people were shown a picture of a plastic cup on forest ground. They were asked about their feeling when seeing trash in the forest, from 1 to 5 (1 = very upset, 5 = very happy.)
 
-or do this in a table
+@fig-age-gender-feeling shows that all participants reported a bad feeling (level 1 or 2) after seeing waste in the forest. There are no obvious trends from gender. But it is remarkable that only
 
 ```{r}
-#| label: male-female-subsets
-survey_male <- survey_small |> 
-  filter(gender == "male")
 
-survey_female <- survey_small |> 
-  filter(gender == "female")
-  
+#| label: fig-age-gender-feeling
+#| fig-cap: "Relation between age, gender and feeling about seeing waste in the forest"
+
+ggplot(data = survey_small, 
+       mapping = aes(x = age,
+                     y = waste_feeling,
+                     color = gender,
+                     shape = gender
+                    )
+       ) + 
+  geom_point(size = 3) +
+  labs(x = "age in years", y = "perceived forest cleanliness") +
+  ylim(1, NA)
 ```
 
-want: plots for male and female
-
-x = age
-
-y = cleanliness
-
 ```{r}
-#| label: age-gender-rating
+#| label: fig-age-gender-rating
 #| fig-cap: "Relation between age, gender and perceived forest cleanliness"
 
 ggplot(data = survey_small, 
@@ -182,7 +199,7 @@ x = age
 y = days per year
 
 ```{r}
-#| label: age-gender-removalfrequency
+#| label: fig-age-gender-removalfrequency
 #| fig-cap: "Relation between age, gender and desired waste-removal frequency"
 ggplot(data = survey_small, 
        mapping = aes(x = age,
@@ -211,6 +228,13 @@ ggplot(data = survey_vis,
   geom_bar(width = 0.2) +
   labs(title = "Rating of Zurich's forest cleanliness",
        subtitle = "answers from 24 forest users")
+```
+
+want: a plot that shows perceived cleanliness average per day
+
+or do this in a table
+
+```{r} #| label: male-female-subsets survey_male <- survey_small |>    filter(gender == "male")  survey_female <- survey_small |>    filter(gender == "female")}
 ```
 
 The following pie chart visualizes the recycling frequency:
