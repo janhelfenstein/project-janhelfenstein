@@ -1,9 +1,8 @@
 # 02-data-cleaning.R
-# This script cleans and tidies the data from the google survey about waste separation,
-# which we did in the RBTL course in FS25
+# This script cleans and tidies the data from the google survey about waste in the forest,
+# which was the capstone project in the RBTL course in the 2025 spring semester
 # author: Jan Helfenstein
-# date: 2025-06-02
-
+# date: 2025-06-04
 
 # load packages -------------------------
 library(tidyverse)
