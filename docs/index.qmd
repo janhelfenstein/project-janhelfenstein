@@ -29,7 +29,7 @@ For measures against waste, participants prefer actions that are tied to persona
 For this project, a total of 27 participants were asked about their assessment of waste in forests around ETH Hoenggerberg. 12 people were approached in the forest on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day. The following screenshot displays the briefing that the participants received before starting the survey. The photo on the right shows me in the process of looking for participants in the forest.
 
 |                                      |                                       |
-|------------------------------------|------------------------------------|
+|--------------------------------------|---------------------------------------|
 | ![](images/clipboard-2887181069.png) | ![](images/clipboard-1730554855.jpeg) |
 
 #### Site plan
@@ -78,7 +78,7 @@ The answers of the 2 German-speaking participants were manually entered into the
 On Monday, 2nd of June 2025, the English survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex. More flyers were also hung up at different picnic-area spots in the Hoenggerberg and Kaeferberg forests.
 
 |                                       |                                      |                                       |
-|------------------------|------------------------|------------------------|
+|---------------------------------------|--------------------------------------|---------------------------------------|
 | ![](images/clipboard-3097511101.jpeg) | ![](images/clipboard-132594642.jpeg) | ![](images/clipboard-3518673957.jpeg) |
 
 ![](images/clipboard-970658310.png)
@@ -115,7 +115,7 @@ survey2 <- read_rds(here::here("data/processed/survey2-processed.rds"))
 survey_small <- read_rds(here::here("data/processed/survey-small-processed.rds"))
 ```
 
-# Results 
+# Results
 
 ## Data visualization
 
@@ -433,6 +433,7 @@ waste_location$source <- "forest waste in general"
 waste_location_today$source <- "forest waste today"
 
 waste_combined <- rbind(waste_location, waste_location_today)
+write_csv(waste_combined, here::here("data/final/waste_combined.csv"))
 
 ggplot(data = waste_combined, 
        aes(x = waste_location, 
