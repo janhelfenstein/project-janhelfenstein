@@ -41,13 +41,15 @@ survey_renamed <- survey_raw |>
 
 
 # step 2: change dates and times, add weekday variable
-survey_dates <- survey_renamed |> 
+survey_renamed <- survey_renamed |> 
   mutate(date = as_date(timestamp)) |> 
   mutate(time = format(timestamp, "%H:%M:%S")) |> 
   mutate(weekday = wday(timestamp, label = TRUE, abb = FALSE)) |> 
   relocate(weekday) |> 
   relocate(time) |> 
-  relocate(date) |> 
+  relocate(date)
+
+survey_dates <- survey_renamed |> 
   select(!timestamp) # remove old timestamp variable
 
 # step 3: add a column "id" and reorder
