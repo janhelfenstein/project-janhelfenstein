@@ -1,16 +1,53 @@
 ---
-title: "index"
+title: "Waste in Swiss Forests - Report"
 author: "Jan Helfenstein"
-format: html
+date: 2025-06-04
+format: 
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  warning: false
+editor_options: 
+  chunk_output_type: console
 editor: visual
-date: 2025-03-24
 ---
 
-## Index
+# Waste in Zurichs Forests - Report
 
-## packages
+## Abstract
+
+Waste in Swiss Forest is a concern for wildlife and the environment, but also for the perceived beauty of nature. Litter such as plastic bottles, cans or food packaging is often left behind by people going through the forest, and is detrimental to the ecosystem. This project aims to portray the state of waste in Zurichs forests at Hoenggerberg and Kaeferberg in June 2025, and to find solutions for the problem. For this, people in Zurich were asked about how they perceive the state of waste in the forests of Hoenggerberg and Kaeferberg. It was investigated, where they saw which types of waste in the forest and what activities were likely causing this waste. A special focus was placed on the impact of sports in the forest. Finally, participants selected possible measures to remove waste from the forest.
+
+It was found that most litter in the forest lands around picnic areas and benches, in the form of consumer goods such as plastic bottles, cans and cigarette butts. While participants generally have a positive view of the waste situation in the forest (4 out of 5), they believe that activities such as barbecue, picnic or camping cause the most waste for the forest. Sports activities were not perceived to have an extra impact on waste.\
+For measures against waste, participants prefer actions that are tied to personal responsibility first, such as trash-removal by the ones who left it, and to install more bins in the forest for this purpose. Fines for those who litter should further enforce this direct responsibility. Clean-up of waste by authorities or volunteers received the second-most votes.
+
+## Methods
+
+For this project, people in the forest were approached and asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day. The survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. The survey consists of 19 questions, separated into 5 sections
+
+1.  Waste in the forest
+
+2.  Forest activities
+
+3.  Sports in the forest
+
+4.  Measures against waste in the forest
+
+5.  A section about user's demographic information
+
+A link to the survey can be found here:
+
+<https://forms.gle/fVKfmVac1KsewLs96>
+
+The survey was then processed with the help of R-scripts on the R-Studio platform. The R-packages used for this were tidyverse, readr, ggplot2, gt, knitr, googlesheets4, dplyr and lubridate. Git version control was applied and the progress was stored on a GitHub repository.
+
+The final report was written as a Quarto document and published via GitHub pages. The R-code and the generated visualizations are listed below.
+
+## R-packages
 
 ```{r}
+#| label: r-packages
 library(tidyverse)
 library(readr)
 library(ggplot2)
@@ -18,10 +55,12 @@ library(gt)
 library(knitr)
 ```
 
-## Get data
+## Import data
 
 ```{r}
-survey <- read_rds(here::here("data/processed/survey-data-processed.rds"))
+#| label: data-import
+survey1 <- read_rds(here::here("data/processed/survey1-data-processed.rds"))
+survey2 <- read_rds(here::here("data/processed/survey1-data-processed.rds"))
 ```
 
 ## Visualize data
