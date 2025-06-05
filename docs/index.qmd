@@ -395,7 +395,7 @@ ggplot(data = waste_types,
                      y = count)
 ) +
   geom_col() +
-  labs(y = "Waste type seen today")
+  labs(x = "Waste type seen today")
 
 ```
 
