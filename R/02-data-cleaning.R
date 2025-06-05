@@ -68,23 +68,25 @@ survey_id <- survey_id |>
 # step 4: lowercase letters ----------------
 # replace "I'm not sure" answers with "unsure" to have fewer spaces
 # change answers to lower case letters for consistency
-survey_shorter1 <- survey_id |> 
+survey_short1 <- survey_id |> 
   mutate(sports_event_waste = case_when(sports_event_waste == "I'm not sure" ~ "unsure",
                                         sports_event_waste == "Yes" ~ "yes",
                                         sports_event_waste == "No" ~ "no",
                                         .default = "unsure")
         )
 
-survey_shorter1 <- survey_shorter1 |> 
+survey_short1 <- survey_short1 |> 
   mutate(sports_littering = case_when(sports_littering == "I'm not sure" ~ "unsure",
                                       sports_littering == "Yes" ~ "yes",
                                       sports_littering == "No" ~ "no",
                                       .default = "unsure")
         )
 
-survey_shorter1 <- survey_shorter1 |> 
-  mutate(waste_seen_today = case_when(waste_seen_today == "Yes" ~ "yes",
-                                      waste_seen_today == "No" ~ "no")
+# create boolean variable for the question "Did you see waste in the forest today?"
+survey_short1 <- survey_short1 |> 
+  mutate(waste_seen_today = case_when(waste_seen_today == "Yes" ~ TRUE,
+                                      waste_seen_today == "No" ~ FALSE,
+                                      .default = FALSE)
          )
 
 # do the same to change weekday and gender variables to lowercase,
@@ -92,7 +94,7 @@ survey_shorter1 <- survey_shorter1 |>
 # to avoid typing too much I asked ChatGPT, see prompts here:
 # https://chatgpt.com/share/68406f4e-4628-8011-a1cd-6a9b0d268322
 
-survey_shorter1 <- survey_shorter1 |> 
+survey_short1 <- survey_short1 |> 
   mutate(gender = str_to_lower(gender)) |> 
   mutate(weekday = str_to_lower(weekday))
 
@@ -107,7 +109,7 @@ responsible = c("litterer", "authorities", "volunteers", "me", "nobody")
 # separate multiple text values stored in one cell, coming from to multiple choice questions
 # then shorten the text values to single words
 # do it for waste_location
-survey_shorter2 <- survey_shorter1 |> 
+survey_short2 <- survey_short1 |> 
   separate_longer_delim(waste_location, ", ") |> 
   mutate(waste_location = case_when(waste_location == "Along paths or trails" ~ "paths",
                                     waste_location == "Around picnic areas or benches" ~ "picnicareas",
@@ -117,7 +119,7 @@ survey_shorter2 <- survey_shorter1 |>
     )
 
 # do it for activities
-survey_shorter3 <- survey_shorter2 |> 
+survey_short3 <- survey_short2 |> 
   separate_longer_delim(activities, ", ") |> 
   mutate(activities = case_when(activities == "Walking / Running" ~ "walking",
                                 activities == "Barbecue or Picnic" ~ "picnic",
@@ -130,7 +132,7 @@ survey_shorter3 <- survey_shorter2 |>
                                 .default = "other"))
 
 # do it for activities_today
-survey_shorter4 <- survey_shorter3 |> 
+survey_short4 <- survey_short3 |> 
   separate_longer_delim(activities_today, ", ") |> 
   mutate(activities_today = case_when(activities_today == "Walking / Running" ~ "walking",
                                 activities_today == "Barbecue or Picnic" ~ "picnic",
@@ -143,7 +145,7 @@ survey_shorter4 <- survey_shorter3 |>
                                 .default = "other"))
 
 # do it for activities_wasteful
-survey_shorter5 <- survey_shorter4 |> 
+survey_short5 <- survey_short4 |> 
   separate_longer_delim(activities_wasteful, ", ") |> 
   mutate(activities_wasteful = case_when(activities_wasteful == "Walking / Running" ~ "walking",
                                       activities_wasteful == "Barbecue or Picnic" ~ "picnic",
@@ -155,7 +157,7 @@ survey_shorter5 <- survey_shorter4 |>
                                       activities_wasteful == "Gathering" ~ "gathering",
                                       .default = "other"))
 # do it for measures
-survey_shorter6 <- survey_shorter5 |> 
+survey_short6 <- survey_short5 |> 
   separate_longer_delim(measures, ", ") |> 
   mutate(measures = case_when(measures == "Removal by authorities" ~ "authorities",
                               measures == "More trash bins" ~ "bins",
@@ -165,7 +167,7 @@ survey_shorter6 <- survey_shorter5 |>
                               measures == "Volunteer forest rangers" ~ "volunteers"))
 
 # for measures_responsible, simply shorten the answers to single words
-survey1_almost <- survey_shorter6 |> 
+survey_short7 <- survey_short6 |> 
   mutate(measures_responsible = case_when(measures_responsible == "Pick up by the one who left it" ~ "litterer",
                                           measures_responsible == "Pick up by authorities" ~ "authorities",
                                           measures_responsible == "Volunteers should pick it up" ~ "volunteers",
@@ -177,14 +179,14 @@ survey1_almost <- survey_shorter6 |>
 
 # filtering out participants who didn't see waste today
 # and separating multiple text values in one cell
-survey2 <- survey1_almost |> 
-  filter(waste_seen_today == "yes") |> 
+survey2_short <- survey_short7 |> 
+  filter(waste_seen_today == TRUE) |> 
   separate_longer_delim(waste_location_today, ", ") |> 
   separate_longer_delim(waste_type_today, ", ")
 
 # shorten text values to single words
 # first for waste_location_today
-survey2 <- survey2 |> 
+survey2_short <- survey2_short |> 
   mutate(waste_location_today = case_when(waste_location_today == "Along paths or trails" ~ "paths",
                                     waste_location_today == "Around picnic areas or benches" ~ "picnicareas",
                                     waste_location_today == "Near parking lots" ~ "parkinglots", 
@@ -192,7 +194,7 @@ survey2 <- survey2 |>
                                     .default = "other")
            )
 
-survey2 <- survey2 |> 
+survey2_short <- survey2_short |> 
   mutate(waste_type_today = case_when(waste_type_today == "Paper or Cardboard" ~ "paper",
                                       waste_type_today == "Plastic Bottles" ~ "plasticbottles",
                                       waste_type_today == "Cans" ~ "cans",
@@ -205,13 +207,13 @@ survey2 <- survey2 |>
          )
 
 # step 7: repeat step 6 for dataset survey1 (which has all participants but many NA cells)
-survey1 <- survey1_almost |> 
+survey1_short <- survey_short7 |> 
   separate_longer_delim(waste_location_today, ", ") |> 
   separate_longer_delim(waste_type_today, ", ")
 
 # shorten text values to single words
 # first for waste_location_today
-survey1 <- survey1 |> 
+survey1_short <- survey1_short |> 
   mutate(waste_location_today = case_when(waste_location_today == "Along paths or trails" ~ "paths",
                                           waste_location_today == "Around picnic areas or benches" ~ "picnicareas",
                                           waste_location_today == "Near parking lots" ~ "parkinglots", 
@@ -219,7 +221,7 @@ survey1 <- survey1 |>
                                           .default = "other")
   )
 
-survey1 <- survey1 |> 
+survey1_short <- survey1_short |> 
   mutate(waste_type_today = case_when(waste_type_today == "Paper or Cardboard" ~ "paper",
                                       waste_type_today == "Plastic Bottles" ~ "plasticbottles",
                                       waste_type_today == "Cans" ~ "cans",
@@ -246,16 +248,21 @@ levels_weekday <- c("sunday", "monday", "tuesday", "wednesday", "thursday")
 levels_responsible <- c("litterer", "me", "volunteers", "authorities", "nobody")
 
 # order and create factor variables for survey1
-survey1_ordered <- survey1 |> 
+survey1_ordered <- survey1_short |> 
   mutate(weekday = factor(weekday, levels = levels_weekday)) |> 
   mutate(measures_responsible = factor(measures_responsible, levels = levels_responsible))
-
 
 # repeat for survey2
-survey2_ordered <- survey2 |> 
+survey2_ordered <- survey2_short |> 
   mutate(weekday = factor(weekday, levels = levels_weekday)) |> 
   mutate(measures_responsible = factor(measures_responsible, levels = levels_responsible))
 
+# step 9: write csv and rds in the processed directory
+# write csv and rds in processed
+write_csv(survey1_ordered, "data/processed/survey1-data-processed.csv")
+write_csv(survey2_ordered, "data/processed/survey2-data-processed.csv")
+write_rds(survey1_ordered, "data/processed/survey1-data-processed.rds")
+write_rds(survey2_ordered, "data/processed/survey2-data-processed.rds")
 
 
 # legacy code, use only for reference ----------
