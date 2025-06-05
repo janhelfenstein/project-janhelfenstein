@@ -46,6 +46,12 @@ A link to the survey can be found here:
 
 <https://forms.gle/fVKfmVac1KsewLs96>
 
+### German survey
+
+A second survey was created in German, in order to reach more participants. However, this workflow was later deemed as too complicated. Hence, only two participants (an elderly couple) answered the german survey on the first day, and all following participants were shown the English survey instead.
+
+The answers of the 2 German-speaking participants manually entered into the english survey on Thursday, 6th of June, by the study author.
+
 On Monday, 2nd of June 2025, the survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex.
 
 ![](images/clipboard-970658310.png)
@@ -75,7 +81,7 @@ library(knitr)
 #| label: data-import
 survey1 <- read_rds(here::here("data/processed/survey1-data-processed.rds"))
 survey2 <- read_rds(here::here("data/processed/survey1-data-processed.rds"))
-survey_timestamp <- read_rds(here::here("data/processed/survey-timestamp.rds"))
+survey_small <- read_rds(here::here("data/processed/survey-small.rds"))
 ```
 
 ## Data visualization
@@ -85,7 +91,7 @@ The following point plot @fig-rating displays when survey was taken and how the 
 ```{r}
 #| label: fig-rating
 #| fig-cap: "Survey timeline and perceived cleanliness of the forest"
-survey_vis <- survey_timestamp |> 
+survey_vis <- survey_small |> 
   group_by(weekday) |> 
   mutate(amount = n())
 
@@ -99,16 +105,16 @@ ggplot(data = survey_vis,
 
 ```
 
-second figure: problem: each row counts as a person.
+second figure: number of answers per day
 
 ```{r}
 #| label: fig-rating2
-#| fig-cap: "Survey timeline and perceived cleanliness of the forest"
-survey1_vis <- survey1 |> 
-  group_by(id) |> 
+#| fig-cap: "Number of answers per day"
+survey_vis2 <- survey_small |> 
+  group_by(weekday) |> 
   mutate(amount = n())
 
-ggplot(data = survey1_vis, 
+ggplot(data = survey_vis2, 
        mapping = aes(x = weekday
                      #y = waste_rating
                     )
@@ -119,6 +125,46 @@ ggplot(data = survey1_vis,
 ```
 
 ------------------------------------------------------------------------
+
+want: a plot tthat sows perceived cleanliness average per day
+
+or do this in a table
+
+```{r}
+#| label: male-female-subsets
+survey_male <- survey_small |> 
+  filter(gender == "male")
+
+survey_female <- survey_small |> 
+  filter(gender == "female")
+  
+```
+
+want: plots for male and female
+
+x = age
+
+y = cleanliness
+
+```{r}
+#| label: age-cleanliness
+#| fig-cap: "Relation between age, gender and perceived forest cleanliness"
+
+ggplot(data = survey_small, 
+       mapping = aes(x = age,
+                     y = waste_rating,
+                     color = gender,
+                     shape = gender
+                    )
+       ) + 
+  geom_point(size = 3) +
+  labs(x = "age in years", y = "perceived forest cleanliness") +
+  ylim(1, NA)
+```
+
+x = age
+
+y = days per year
 
 The next bar plot @fig-recycling shows the relation between the participants' forest-visiting frequency and their rating of the forest's cleanliness. Generally, people who visit the forest more often tend to give a higher rating.
 
