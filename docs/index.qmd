@@ -1,7 +1,7 @@
 ---
 title: "Waste in Swiss Forests - Report"
 author: "Jan Helfenstein"
-date: 2025-06-04
+date: 2025-06-05
 format: 
   html:
     embed-resources: true
@@ -24,7 +24,13 @@ For measures against waste, participants prefer actions that are tied to persona
 
 ## Methods
 
-For this project, people in the forest were approached and asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day. The survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. The survey consists of 19 questions, separated into 5 sections
+### Data gathering
+
+For this project, 11 people in the forest were approached on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day.
+
+![](images/clipboard-2887181069.png)
+
+The survey consists of 19 questions, separated into 5 sections
 
 1.  Waste in the forest
 
@@ -39,6 +45,14 @@ For this project, people in the forest were approached and asked to fill out a G
 A link to the survey can be found here:
 
 <https://forms.gle/fVKfmVac1KsewLs96>
+
+On Monday, 2nd of June 2025, the survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex.
+
+![](images/clipboard-970658310.png)
+
+To ensure validity, participants who filled out the survey in this manner were reminded again to only fill out the survey if they were in the forest on that day. But it since they were not met in the forest, like the first batch of participants, it can't be verified if they were actually in the forest on that day.
+
+### Data processing
 
 The survey was then processed with the help of R-scripts on the R-Studio platform. The R-packages used for this were tidyverse, readr, ggplot2, gt, knitr, googlesheets4, dplyr and lubridate. Git version control was applied and the progress was stored on a GitHub repository.
 
@@ -55,35 +69,37 @@ library(gt)
 library(knitr)
 ```
 
-## Import data
+## Data import
 
 ```{r}
 #| label: data-import
 survey1 <- read_rds(here::here("data/processed/survey1-data-processed.rds"))
 survey2 <- read_rds(here::here("data/processed/survey1-data-processed.rds"))
+survey_timestamp <- read_rds(here::here("data/processed/survey-timestamp.rds"))
 ```
 
-## Visualize data
+## Data visualization
 
-The following point plot @fig-rating displays when survey was taken and how the users rated ETH's recycling situation. It is possible that the given rating reflected the tidyness at ETH at that time.
+The following point plot @fig-rating displays when survey was taken and how the users rated the waste situation in the forest around Hoenggerberg. The rating range was from 1 to 5, with 5 being the best (highest cleanliness). It is likely that the given rating reflected the tidyness at in the forest at that time.
 
 ```{r}
 #| label: fig-rating
-#| fig-cap: "Survey timeline and ETH's recycling rating"
-survey_vis <- survey |> 
-  rename("recycling_frequency" = recycler_cat) |> 
+#| fig-cap: "Survey timeline and perceived cleanliness of the forest"
+survey_vis <- survey_timestamp |> 
   group_by(weekday) |> 
   mutate(amount = n())
 
 ggplot(data = survey_vis, 
-       mapping = aes(x = datetime,
-                     y = rating
+       mapping = aes(x = timestamp,
+                     y = waste_rating
                     )
        ) + 
   geom_point(shape = 2, size = 3) + 
-  labs(x = "survey timestamp")
+  labs(x = "survey timestamp", y = "perceived forest cleanliness")
 
 ```
+
+---
 
 The next bar plot @fig-recycling shows the relation between the participants' recycling frequency and their rating of ETH's recycling situation. Generally, people who recycle more often tend to give a higher rating.
 
