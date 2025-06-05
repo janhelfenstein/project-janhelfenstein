@@ -7,7 +7,7 @@ format:
     embed-resources: true
     toc: true
 execute:
-  warning: true
+  warning: false
 editor_options: 
   chunk_output_type: console
 editor: visual
@@ -15,14 +15,14 @@ editor: visual
 
 # Waste in Swiss Forests - Report
 
-## Abstract
+# Introduction
 
 Waste in Swiss Forest is a concern for wildlife and the environment, but also for the perceived beauty of nature. Litter such as plastic bottles, cans or food packaging is often left behind by people going through the forest, and is detrimental to the ecosystem. This project aims to portray the state of waste in Zurichs forests at Hoenggerberg and Kaeferberg in June 2025, and to find solutions for the problem. For this, people in Zurich were asked about how they perceive the state of waste in the forests of Hoenggerberg and Kaeferberg. It was investigated, where they saw which types of waste in the forest and what activities were likely causing this waste. A special focus was placed on the impact of sports in the forest. Finally, participants selected possible measures to remove waste from the forest.
 
 It was found that most litter in the forest lands around picnic areas and benches, in the form of consumer goods such as plastic bottles, cans and cigarette butts. While participants generally have a positive view of the waste situation in the forest (4 out of 5), they believe that activities such as barbecue, picnic or camping cause the most waste for the forest. Sports activities were not perceived to have an extra impact on waste.\
 For measures against waste, participants prefer actions that are tied to personal responsibility first, such as trash-removal by the ones who left it, and to install more bins in the forest for this purpose. Fines for those who litter should further enforce this direct responsibility. Clean-up of waste by authorities or volunteers received the second-most votes.
 
-## Methods
+# Methods
 
 ### Data gathering
 
@@ -115,7 +115,9 @@ survey2 <- read_rds(here::here("data/processed/survey2-processed.rds"))
 survey_small <- read_rds(here::here("data/processed/survey-small-processed.rds"))
 ```
 
-## Results - Data visualization
+# Results 
+
+## Data visualization
 
 In this section, visualization tools learned in the RBTL course are utilized to create different tables and diagrams to highlight certain trends in the data.
 
@@ -443,7 +445,7 @@ ggplot(data = waste_combined,
   theme_minimal()
 ```
 
-## Conclusion
+# Conclusion
 
 As a result of this survey, it was found that most people think that litter in the forest is concentrated around picnic spots and benches, and mainly consists of consumer waste like plastic bottles, cans, and cigarette butts. Although the participants generally rated the forest’s waste situation in a positive way (with an average score of 4 out of 5), they report deeply negative feelings (scoring 1 or 2 out of 5) when seeing waste in the forest. The waste was identified to come from activities such as barbecuing, picnicking, and camping as the primary sources. In contrast, sports activities were not seen as a major contributor to the problem.
 
