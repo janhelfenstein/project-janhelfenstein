@@ -264,5 +264,5 @@ write_rds(survey1_short, "data/processed/survey1-data-processed.rds")
 write_rds(survey2_short, "data/processed/survey2-data-processed.rds")
 
 # save survey_ordered for the sake of having 1 row per participant
-write_csv(survey_ordered, "data/processed/survey-timestamp.csv")
-write_rds(survey_ordered, "data/processed/survey-timestamp.rds")
+write_csv(survey_ordered, "data/processed/survey-small.csv")
+write_rds(survey_ordered, "data/processed/survey-small.rds")
