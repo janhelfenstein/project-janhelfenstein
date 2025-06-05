@@ -26,23 +26,28 @@ For measures against waste, participants prefer actions that are tied to persona
 
 ### Data gathering
 
-For this project, 11 people in the forest were approached on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day.
+For this project, 12 people in the forest were approached on the evening of Sunday, 1st of June 2025. They were asked to fill out a Google survey about how they perceive waste in that forest in general, and specifically on that day. The following screenshot displays the briefing that the participants received before starting the survey. The photo on the right shows me in the process of looking for participants in the forest.
 
 |                                      |                                       |
 |------------------------------------|------------------------------------|
-| ![](images/clipboard-2887181069.png) | ![](images/clipboard-3782636616.jpeg) |
+| ![](images/clipboard-2887181069.png) | ![](images/clipboard-1730554855.jpeg) |
 
 The survey consists of 19 questions, separated into 5 sections:
 
-1.  Waste in the forest
+1.  Waste in the forest \
+    (6 questions, 2 optional)
 
-2.  Forest activities
+2.  Forest activities\
+    (4 questions)
 
-3.  Sports in the forest
+3.  Sports in the forest\
+    (4 questions)
 
-4.  Measures against waste in the forest
+4.  Measures against waste in the forest\
+    (3 questions)
 
-5.  A section about user's demographic information
+5.  A section about the user's demographic information\
+    (2 questions: age, gender)
 
 A link to the survey can be found here:
 
@@ -52,9 +57,13 @@ A link to the survey can be found here:
 
 A second survey was created in German, in order to reach more participants. However, the workflow to entertain two surveys simultaneously was later deemed as too complicated. Hence, only two participants (an elderly couple) answered the German survey on the first day, and all following participants were shown the English survey instead.
 
-The answers of the 2 German-speaking participants were manually entered into the English survey on Thursday, 6th of June, at 16:43 by the study author.
+A link to the German survey can be found here:
 
-On Monday, 2nd of June 2025, the survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex. More flyers were also hung up at different picnic-area spots in the Hoenggerberg and Kaeferberg forests.
+<https://forms.gle/gXJUSYirHmnU8XbF7>
+
+The answers of the 2 German-speaking participants were manually entered into the English version of the Google Form on Thursday, 6th of June, by the study author. Thus, all analysis could be done based on the results from the English survey.
+
+On Monday, 2nd of June 2025, the English survey was then also sent to residents in student housing at ETH Hoenggerberg via social media. Further, flyers with a QR code were hung up in the student housing complex. More flyers were also hung up at different picnic-area spots in the Hoenggerberg and Kaeferberg forests.
 
 |                                       |                                      |                                       |
 |------------------------|------------------------|------------------------|
@@ -66,9 +75,11 @@ To ensure validity, participants who filled out the survey in this manner were r
 
 ### Data processing
 
-The survey was then processed with the help of R-scripts on the R-Studio platform. The R-packages used for this were tidyverse, readr, ggplot2, gt, knitr, googlesheets4, dplyr and lubridate. Git version control was applied and the progress was stored on a GitHub repository.
+The survey was then processed with the help of R-scripts on the R-Studio platform. The first R-script "01-data-download.R" extracts the raw data from the Google Sheet that comes along with the survey. The second R-script "02-data-cleaning" then processes this data into a tidy dataframe, one cell per value, one value per cell. Finally, a Quarto document "index.qmd" is used to write this report within R-Studio.
 
-The final report was written as a Quarto document and published via GitHub pages. The R-code and the generated visualizations are listed below.
+The R-packages used for this process were tidyverse, readr, ggplot2, gt, knitr, googlesheets4, dplyr and lubridate. During development, Git version control was applied and the progress was stored on a GitHub repository.
+
+The final report was then published via GitHub pages. The R-code and the generated visualizations, with their interpretation, are listed below.
 
 ## R-packages
 
@@ -101,9 +112,6 @@ The following point plot @fig-timeline displays when survey was taken and how th
 ```{r}
 #| label: fig-timeline
 #| fig-cap: "Survey timeline and perceived cleanliness of the forest"
-survey_timestamp <- survey_small |> 
-  group_by(weekday) |> 
-  mutate(amount = n())
 
 ggplot(data = survey_small, 
        mapping = aes(x = timestamp,
@@ -119,6 +127,22 @@ ggplot(data = survey_small,
 
 # the tip to include scale_shape(solid = FALSE) came from stackoverflow,
 # https://stackoverflow.com/a/51775750
+```
+
+The figure is a bit hard to read, because most people filled the survey at around the same time. To make it more clear, the following table presents the summarized data in a more understandable form:
+
+```{r}
+#| label: tbl-weekday-gender
+#| tbl-cap: "Number of participants per weekday"
+survey_weekday <- survey_small |> 
+  group_by(weekday, gender) |> 
+  summarize(amount = n())
+
+survey_weekday |> 
+  ungroup() |> 
+  gt()
+
+write_csv(survey_weekday, here::here("data/final/tbl-weekday-gender.csv"))
 ```
 
 The second figure @fig-weekday displays the number of answers per day, while also showing a more visible distinction between male and female responses. 11 people were met in-person in the forest on Sunday evening, of which most were male. From Monday to Thursday, responses came from people answering the questionnaire online. Most answers came in on Monday, when the link to the survey was posted in a WhatsApp group chat for students living in student housing on Campus Hoenggerberg, which is only 200 meters away from the Kaeferberg forest. Most of these participants were also male.
