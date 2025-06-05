@@ -46,7 +46,7 @@ survey_renamed <- survey_raw |>
 # https://chatgpt.com/share/6841b0b5-c2e4-8011-b70d-c15aacb89456
 survey_renamed <- survey_renamed |> 
   mutate(timestamp = replace(timestamp, 26, "2025-06-01T15:25:27Z")) |> 
-  mutate(timestamp = replace(timestamp, 26, "2025-06-01T15:39:16Z"))
+  mutate(timestamp = replace(timestamp, 27, "2025-06-01T15:39:16Z"))
 
 # step 2: change dates and times, add weekday variable
 survey_renamed <- survey_renamed |> 
