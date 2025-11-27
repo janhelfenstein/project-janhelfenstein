@@ -2,11 +2,9 @@
 
 ## General information
 
-1.  Title of Dataset:  forest-waste
+Title of Dataset:  forest-waste
 
-2.  Author Information
-
-**Author A**
+Author Information:
 
 - First name: Jan
 - Surname: Helfenstein
